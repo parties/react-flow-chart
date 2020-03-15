@@ -1,7 +1,7 @@
 import { cloneDeep, mapValues, get } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlowChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, LinkDefault } from '../src'
+import { FlowChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, LinkDefault, IChart, IOnCanvasClick } from '../src'
 import * as actions from '../src/container/actions'
 import { Page } from './components'
 import { chartSimple } from './misc/exampleChartState'
@@ -88,7 +88,7 @@ const EditableLabel = ({ defaultLabel }: { defaultLabel?: string }) => {
  * Make sure it has the same prop signature
  */
 const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
-  const [label, setLabel] = React.useState(get(node, "properties.label"))
+  const [label, setLabel] = React.useState(get(node, 'properties.label'))
   const [isEditing, setIsEditing] = React.useState(false)
 
   if (node.type === 'output-only') {
@@ -211,7 +211,7 @@ const LinkCustom = (stateActions: typeof actions) => (props: ILinkDefaultProps) 
         {isEditing && <input type="text" value={label} onChange={(e) => setLabel(e.target.value)} />}
         <Button
           onClick={(e) => {
-            console.log("clicked button")
+            console.log('clicked button')
             onLinkClick({ linkId: link.id })
             stateActions.onDeleteKey({})
             e.stopPropagation()
@@ -244,4 +244,85 @@ export class CustomNodeDemo extends React.Component {
       </Page>
     )
   }
+}
+
+enum EChartActionTypes {
+  onDragNode = 'onDragNode',
+  onDragNodeStop = 'onDragNodeStop',
+  onDragCanvas = 'onDragCanvas',
+  onCanvasDrop = 'onCanvasDrop',
+  onDragCanvasStop = 'onDragCanvasStop',
+  onLinkStart = 'onLinkStart',
+  onLinkMove = 'onLinkMove',
+  onLinkComplete = 'onLinkComplete',
+  onLinkCancel = 'onLinkCancel',
+  onPortPositionChange = 'onPortPositionChange',
+  onLinkMouseEnter = 'onLinkMouseEnter',
+  onLinkMouseLeave = 'onLinkMouseLeave',
+  onLinkClick = 'onLinkClick',
+  onCanvasClick = 'onCanvasClick',
+  onDeleteKey = 'onDeleteKey',
+  onNodeClick = 'onNodeClick',
+  onNodeMouseEnter = 'onNodeMouseEnter',
+  onNodeMouseLeave = 'onNodeMouseLeave',
+  onNodeSizeChange = 'onNodeSizeChange',
+}
+
+type Dispatch = React.Dispatch<React.SetStateAction<IChart>>;
+
+const ChartStateContext = React.createContext<IChart | undefined>(undefined);
+const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined);
+
+function ChartProvider({ children }) {
+  const [state, dispatch] = React.useState(cloneDeep(chartSimple));
+
+  return (
+    <ChartStateContext.Provider value={state}>
+      <ChartDispatchContext.Provider value={dispatch}>
+        {children}
+      </ChartDispatchContext.Provider>
+    </ChartStateContext.Provider>
+  );
+}
+
+function useChartState () {
+  const context = React.useContext(ChartStateContext);
+  if (context === undefined) {
+    throw new Error('useChartState must be used within a ChartProvider');
+  }
+
+  return context;
+}
+
+function useChartDispatch () {
+  const context = React.useContext(ChartDispatchContext);
+  if (context === undefined) {
+    throw new Error('useChartDispatch must be used within a ChartProvider');
+  }
+
+  return context;
+}
+
+export const MyNodeDemo = () => {
+  const chartState = useChartState();
+  const chartDispatch = useChartDispatch();
+
+  const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => chartDispatch(actionFunc(...args))) as typeof actions;
+
+  return (
+    <Page>
+      <FlowChart
+        chart={chartState}
+        callbacks={stateActions}
+      />
+    </Page>
+  )
+}
+
+export const Demo = () => {
+  return (
+    <ChartProvider>
+      <MyNodeDemo />
+    </ChartProvider>
+  )
 }
