@@ -1,5 +1,6 @@
 import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash';
 import * as React from 'react';
+import { GithubPicker } from 'react-color';
 import styled from 'styled-components';
 import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src';
 import * as actions from '../src/container/actions';
@@ -22,13 +23,22 @@ const LightBox = styled.div`
 `;
 
 const Outer = styled.div`
-  padding: 30px;
+  padding: 20px 30px;
+  border-radius: 10px;
+  background: ${(props) => props.color || '#fff'};
+`;
+
+const NodeEditContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Input = styled.input`
   padding: 10px;
   border: 1px solid cornflowerblue;
   width: 100%;
+  border-radius: 2px;
 `;
 
 const Label = styled.div`
@@ -69,6 +79,15 @@ const LabelContent = styled.div`
   cursor: pointer;
 `;
 
+const ColorButton = styled.div`
+  height: 30px;
+  width: 30px;
+  border: 1px solid black;
+  margin-left: 10px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+`;
+
 /**
  * Create the custom component,
  * Make sure it has the same prop signature
@@ -76,6 +95,7 @@ const LabelContent = styled.div`
 const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
   const [label, setLabel] = React.useState(node.properties.label);
   const [isEditing, setIsEditing] = React.useState(false);
+  const [showColor, setShowColor] = React.useState(false);
 
   const chartState = useChartState();
   const chartDispatch = useChartDispatch();
@@ -88,11 +108,11 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
     }
   }, [inputRef.current, isEditing]);
 
-  if (node.type === 'output-only') {
-    return (
-      <Outer>
-        {
-          isEditing ? (
+  return (
+    <Outer color={node.properties.color}>
+      {
+        isEditing ? (
+          <NodeEditContainer>
             <Input
               type="text"
               ref={inputRef}
@@ -126,27 +146,36 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
               onMouseUp={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
             />
-          ) : <p onDoubleClick={() => setIsEditing(true)}>{node.properties.label}</p>
-        }
-      </Outer>
-    );
-  } else {
-    return (
-      <Outer>
-        <p>Add custom displays for each node.type</p>
-        <p>You may need to stop event propagation so your forms work.</p>
-        <br />
-        <Input
-          type="text"
-          placeholder="Some Input"
-          onChange={(e) => console.log(e)}
-          onClick={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-        />
-      </Outer>
-    );
-  }
+
+            <ColorButton onClick={() => setShowColor(true)}>
+              {showColor && (
+                <div style={{ position: 'absolute', zIndex: 2, top: 70 }}>
+                  <GithubPicker
+                    onChangeComplete={(color) => {
+                      chartDispatch(
+                        mergeWith(chartState, {
+                          nodes: {
+                            [node.id]: {
+                              ...node,
+                              properties: {
+                                ...node.properties,
+                                color: color.hex,
+                              },
+                            },
+                          },
+                        }),
+                      );
+                      setShowColor(false);
+                    }}
+                  />
+                </div>
+              )}
+            </ColorButton>
+          </NodeEditContainer>
+        ) : <span onDoubleClick={() => setIsEditing(true)}>{node.properties.label}</span>
+      }
+    </Outer>
+  );
 };
 
 /**
