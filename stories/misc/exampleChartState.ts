@@ -14,7 +14,7 @@ export const chartSimple: IChart = {
         y: 100,
       },
       properties: {
-        label: 'Node!',
+        label: 'node1',
       },
       ports: {
         port1: {
@@ -41,7 +41,7 @@ export const chartSimple: IChart = {
         y: 300,
       },
       properties: {
-        label: 'Node!',
+        label: 'node2',
       },
       ports: {
         port1: {
@@ -62,7 +62,7 @@ export const chartSimple: IChart = {
         y: 600,
       },
       properties: {
-        label: 'Node!',
+        label: 'node3',
       },
       ports: {
         port1: {
@@ -83,7 +83,7 @@ export const chartSimple: IChart = {
         y: 600,
       },
       properties: {
-        label: 'Node!',
+        label: 'node4',
       },
       ports: {
         port1: {

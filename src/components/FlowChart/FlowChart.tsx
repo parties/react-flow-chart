@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
   CanvasInnerDefault, CanvasOuterDefault, CanvasWrapper, ICanvasInnerDefaultProps, ICanvasOuterDefaultProps, IChart, IConfig, ILink,
-  ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, IOnCanvasDrop, IOnDeleteKey, IOnDragCanvas,
+  ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, IOnCanvasDoubleClick, IOnCanvasDrop, IOnDeleteKey, IOnDragCanvas,
   IOnDragCanvasStop, IOnDragNode, IOnDragNodeStop, IOnLinkCancel, IOnLinkClick, IOnLinkComplete, IOnLinkMouseEnter,
   IOnLinkMouseLeave, IOnLinkMove, IOnLinkStart, IOnNodeClick, IOnNodeMouseEnter, IOnNodeMouseLeave, IOnNodeSizeChange,
   IOnPortPositionChange, IPortDefaultProps, IPortsDefaultProps, ISelectedOrHovered, LinkDefault, LinkWrapper, NodeDefault, NodeInnerDefault, NodeWrapper, PortDefault, PortsDefault,
@@ -23,6 +23,7 @@ export interface IFlowChartCallbacks {
   onLinkMouseLeave: IOnLinkMouseLeave
   onLinkClick: IOnLinkClick
   onCanvasClick: IOnCanvasClick
+  onCanvasDoubleClick: IOnCanvasDoubleClick
   onDeleteKey: IOnDeleteKey
   onNodeClick: IOnNodeClick
   onNodeMouseEnter: IOnNodeMouseEnter
@@ -81,6 +82,7 @@ export const FlowChart = (props: IFlowChartProps) => {
       onLinkMouseLeave,
       onLinkClick,
       onCanvasClick,
+      onCanvasDoubleClick,
       onDeleteKey,
       onNodeClick,
       onNodeMouseEnter,
@@ -100,7 +102,7 @@ export const FlowChart = (props: IFlowChartProps) => {
   } = props
   const { links, nodes, selected, hovered, offset } = chart
 
-  const canvasCallbacks = { onDragCanvas, onDragCanvasStop, onCanvasClick, onDeleteKey, onCanvasDrop }
+  const canvasCallbacks = { onDragCanvas, onDragCanvasStop, onCanvasClick, onCanvasDoubleClick, onDeleteKey, onCanvasDrop }
   const linkCallbacks = { onLinkMouseEnter, onLinkMouseLeave, onLinkClick }
   const nodeCallbacks = { onDragNode, onNodeClick, onDragNodeStop, onNodeMouseEnter, onNodeMouseLeave, onNodeSizeChange }
   const portCallbacks = { onPortPositionChange, onLinkStart, onLinkMove, onLinkComplete, onLinkCancel }

@@ -78,6 +78,8 @@ export type IOnLinkClick = (input: ILinkBaseInput) => void
 
 export type IOnCanvasClick = (input: { config?: IConfig }) => void
 
+export type IOnCanvasDoubleClick = (event: React.MouseEvent) => void
+
 export type IOnDeleteKey = (input: { config?: IConfig }) => void
 
 export interface INodeBaseInput {

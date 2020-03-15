@@ -18,7 +18,7 @@ export interface ILinkWrapperProps {
   matrix?: number[][]
 }
 
-export const LinkWrapper = React.memo(({
+export const LinkWrapper = React.memo(function _LinkWrapper({
   config,
   Component = LinkDefault,
   link,
@@ -30,7 +30,7 @@ export const LinkWrapper = React.memo(({
   fromNode,
   toNode,
   matrix,
-}: ILinkWrapperProps) => {
+}: ILinkWrapperProps) {
   const startPos = getLinkPosition(fromNode, link.from.portId)
   const fromPort = fromNode.ports[link.from.portId]
 

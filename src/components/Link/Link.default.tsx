@@ -16,7 +16,7 @@ export interface ILinkDefaultProps {
   matrix?: number[][]
 }
 
-export const LinkDefault = ({
+export function LinkDefault({
   config,
   link,
   startPos,
@@ -29,7 +29,7 @@ export const LinkDefault = ({
   isHovered,
   isSelected,
   matrix,
-}: ILinkDefaultProps) => {
+}: ILinkDefaultProps) {
 
   const points = config.smartRouting ?
     !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
@@ -65,7 +65,7 @@ export const LinkDefault = ({
         onClick={(e) => {
           onLinkClick({ config, linkId: link.id })
           e.stopPropagation()
-        } }
+        }}
       />
       <circle
         r="4"

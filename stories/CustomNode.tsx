@@ -1,11 +1,11 @@
-import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash';
-import * as React from 'react';
-import { GithubPicker } from 'react-color';
-import styled from 'styled-components';
-import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src';
-import * as actions from '../src/container/actions';
-import { Page } from './components';
-import { chartSimple } from './misc/exampleChartState';
+import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
+import * as React from 'react'
+import { GithubPicker } from 'react-color'
+import styled from 'styled-components'
+import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src'
+import * as actions from '../src/container/actions'
+import { Page } from './components'
+import { chartSimple } from './misc/exampleChartState'
 
 // const DarkBox = styled.div`
 //   position: absolute;
@@ -20,30 +20,30 @@ const LightBox = styled.div`
   color: #000;
   border-radius: 10px;
   border: 2px solid rgba(100, 100, 100, 0.5);
-`;
+`
 
 const Outer = styled.div`
   padding: 20px 30px;
   border-radius: 10px;
   background: ${(props) => props.color || '#fff'};
-`;
+`
 
 const NodeEditContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const Input = styled.input`
   padding: 10px;
   border: 1px solid cornflowerblue;
   width: 100%;
   border-radius: 2px;
-`;
+`
 
 const Label = styled.div`
   position: absolute;
-`;
+`
 
 const Button = styled.div`
   position: absolute;
@@ -65,7 +65,7 @@ const Button = styled.div`
   &:hover {
     box-shadow: 0 10px 20px rgba(0,0,0,.1);
   }
-`;
+`
 
 const LabelContent = styled.div`
   padding: 5px 10px;
@@ -77,7 +77,7 @@ const LabelContent = styled.div`
   justify-content: center;
   font-size: 10px;
   cursor: pointer;
-`;
+`
 
 const ColorButton = styled.div`
   height: 30px;
@@ -86,27 +86,27 @@ const ColorButton = styled.div`
   margin-left: 10px;
   flex: 0 0 auto;
   border-radius: 2px;
-`;
+`
 
 /**
  * Create the custom component,
  * Make sure it has the same prop signature
  */
-const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
-  const [label, setLabel] = React.useState(node.properties.label);
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [showColor, setShowColor] = React.useState(false);
+function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
+  const [label, setLabel] = React.useState(node.properties.label)
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [showColor, setShowColor] = React.useState(false)
 
-  const chartState = useChartState();
-  const chartDispatch = useChartDispatch();
+  const chartState = useChartState()
+  const chartDispatch = useChartDispatch()
 
-  const inputRef = React.createRef<HTMLInputElement>();
+  const inputRef = React.createRef<HTMLInputElement>()
 
   React.useEffect(() => {
     if (inputRef.current && isEditing) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  }, [inputRef.current, isEditing]);
+  }, [inputRef.current, isEditing])
 
   return (
     <Outer color={node.properties.color}>
@@ -120,7 +120,7 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
               onKeyDown={(e: React.KeyboardEvent) => {
                 // block delete key from deleting the node
                 if (e.key === '8') {
-                  e.stopPropagation();
+                  e.stopPropagation()
                 }
 
                 // enter key will submit the value
@@ -137,9 +137,9 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
                         },
                       },
                     }),
-                  );
+                  )
 
-                  setIsEditing(false);
+                  setIsEditing(false)
                 }
               }}
               onClick={(e) => e.stopPropagation()}
@@ -164,26 +164,34 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
                             },
                           },
                         }),
-                      );
-                      setShowColor(false);
+                      )
+                      setShowColor(false)
                     }}
                   />
                 </div>
               )}
             </ColorButton>
           </NodeEditContainer>
-        ) : <span onDoubleClick={() => setIsEditing(true)}>{node.properties.label}</span>
-      }
+        ) : (
+            <span
+              onDoubleClick={(event: React.MouseEvent) => {
+                event.stopPropagation()
+                setIsEditing(true)
+              }}
+            >
+              {node.properties.label}
+            </span>
+          )}
     </Outer>
-  );
-};
+  )
+}
 
 /**
  * Create the custom component,
  * Make sure it has the same prop signature
  * You'll need to add {...otherProps} so the event listeners are added to your component
  */
-const NodeCustom = React.forwardRef(({ node, children, ...otherProps }: INodeDefaultProps, ref: React.Ref<HTMLDivElement>) => {
+const NodeCustom = React.forwardRef(function _NodeCustom({ node, children, ...otherProps }: INodeDefaultProps, ref: React.Ref<HTMLDivElement>) {
   // console.log("children: ", children);
   // console.log({node})
   // console.log({otherProps})
@@ -191,88 +199,90 @@ const NodeCustom = React.forwardRef(({ node, children, ...otherProps }: INodeDef
     <LightBox ref={ref} {...otherProps}>
       {children}
     </LightBox>
-  );
-});
+  )
+})
 
-const LinkCustom = (stateActions: typeof actions) => (props: ILinkDefaultProps) => {
-  const { startPos, endPos, onLinkClick, link } = props;
-  const centerX = startPos.x + (endPos.x - startPos.x) / 2;
-  const centerY = startPos.y + (endPos.y - startPos.y) / 2;
+function LinkCustom(stateActions: typeof actions) {
+  return (props: ILinkDefaultProps) => {
+    const { startPos, endPos, onLinkClick, link } = props
+    const centerX = startPos.x + (endPos.x - startPos.x) / 2
+    const centerY = startPos.y + (endPos.y - startPos.y) / 2
 
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '');
+    const [isEditing, setIsEditing] = React.useState(false)
+    const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '')
 
-  const chartState = useChartState();
-  const chartDispatch = useChartDispatch();
+    const chartState = useChartState()
+    const chartDispatch = useChartDispatch()
 
-  const inputRef = React.createRef<HTMLInputElement>();
+    const inputRef = React.createRef<HTMLInputElement>()
 
-  React.useEffect(() => {
-    if (inputRef.current && isEditing) {
-      inputRef.current.focus();
-    }
-  }, [inputRef.current, isEditing]);
+    React.useEffect(() => {
+      if (inputRef.current && isEditing) {
+        inputRef.current.focus()
+      }
+    }, [inputRef.current, isEditing])
 
-  return (
-    <>
-      <LinkDefault {...props} />
-      <Label style={{ left: centerX, top: centerY }}>
-        {props.link.properties && props.link.properties.label && !isEditing && (
-          <LabelContent
-            onDoubleClick={() => setIsEditing(true)}
-            onClick={(e) => e.stopPropagation()}
-            onMouseUp={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {props.link.properties && props.link.properties.label}
-          </LabelContent>
-        )}
-        {isEditing && (
-          <Input
-            type="text"
-            ref={inputRef}
-            defaultValue={link.properties.label}
-            onKeyDown={(e: React.KeyboardEvent) => {
-              // block delete key from deleting the node
-              if (e.key === '8') {
-                e.stopPropagation();
-              }
+    return (
+      <>
+        <LinkDefault {...props} />
+        <Label style={{ left: centerX, top: centerY }}>
+          {props.link.properties && props.link.properties.label && !isEditing && (
+            <LabelContent
+              onDoubleClick={() => setIsEditing(true)}
+              onClick={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              {props.link.properties && props.link.properties.label}
+            </LabelContent>
+          )}
+          {isEditing && (
+            <Input
+              type="text"
+              ref={inputRef}
+              defaultValue={link.properties.label}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                // block delete key from deleting the node
+                if (e.key === '8') {
+                  e.stopPropagation()
+                }
 
-              // enter key will submit the value
-              if (e.which === 13) {
-                chartDispatch(
-                  mergeWith(chartState, {
-                    links: {
-                      [link.id]: {
-                        ...link,
-                        properties: {
-                          ...link.properties,
-                          label: inputRef.current && inputRef.current.value,
+                // enter key will submit the value
+                if (e.which === 13) {
+                  chartDispatch(
+                    mergeWith(chartState, {
+                      links: {
+                        [link.id]: {
+                          ...link,
+                          properties: {
+                            ...link.properties,
+                            label: inputRef.current && inputRef.current.value,
+                          },
                         },
                       },
-                    },
-                  }),
-                );
+                    }),
+                  )
 
-                setIsEditing(false);
-              }
-            }}
-            onClick={(e) => e.stopPropagation()}
-            onMouseUp={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          />
-        )}
-      </Label>
-    </>
-  );
-};
+                  setIsEditing(false)
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            />
+          )}
+        </Label>
+      </>
+    )
+  }
+}
 
 export class CustomNodeDemo extends React.Component {
   public state = cloneDeep(chartSimple);
 
-  public render () {
-    const chart = this.state;
-    const stateActions = mapValues(actions, (func: any) => (...args: any) => this.setState(func(...args))) as typeof actions;
+  public render() {
+    const chart = this.state
+    const stateActions = mapValues(actions, (func: any) => (...args: any) => this.setState(func(...args))) as typeof actions
     return (
       <Page>
         <FlowChart
@@ -285,7 +295,7 @@ export class CustomNodeDemo extends React.Component {
           }}
         />
       </Page>
-    );
+    )
   }
 }
 
@@ -311,13 +321,13 @@ enum EChartActionTypes {
   onNodeSizeChange = 'onNodeSizeChange',
 }
 
-type Dispatch = React.Dispatch<React.SetStateAction<IChart>>;
+type Dispatch = React.Dispatch<React.SetStateAction<IChart>>
 
-const ChartStateContext = React.createContext<IChart | undefined>(undefined);
-const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined);
+const ChartStateContext = React.createContext<IChart | undefined>(undefined)
+const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined)
 
-function ChartProvider ({ children }) {
-  const [state, dispatch] = React.useState(cloneDeep(chartSimple));
+function ChartProvider({ children }) {
+  const [state, dispatch] = React.useState(cloneDeep(chartSimple))
 
   return (
     <ChartStateContext.Provider value={state}>
@@ -325,42 +335,42 @@ function ChartProvider ({ children }) {
         {children}
       </ChartDispatchContext.Provider>
     </ChartStateContext.Provider>
-  );
+  )
 }
 
-function useChartState () {
-  const context = React.useContext(ChartStateContext);
+function useChartState() {
+  const context = React.useContext(ChartStateContext)
   if (context === undefined) {
-    throw new Error('useChartState must be used within a ChartProvider');
+    throw new Error('useChartState must be used within a ChartProvider')
   }
 
-  return context;
+  return context
 }
 
-function useChartDispatch () {
-  const context = React.useContext(ChartDispatchContext);
+function useChartDispatch() {
+  const context = React.useContext(ChartDispatchContext)
   if (context === undefined) {
-    throw new Error('useChartDispatch must be used within a ChartProvider');
+    throw new Error('useChartDispatch must be used within a ChartProvider')
   }
 
-  return context;
+  return context
 }
 
-function useForceUpdate () {
-  const [value, setValue] = React.useState(0); // integer state
-  return () => setValue(value => ++value); // update the state to force render
+function useForceUpdate() {
+  const [value, setValue] = React.useState(0) // integer state
+  return () => setValue(value => ++value) // update the state to force render
 }
 
-export const MyNodeDemo = () => {
-  const chartState = useChartState();
-  const chartDispatch = useChartDispatch();
-  const [val, setValue] = React.useState(0);
-  const forceUpdate = React.useCallback(throttle(() => setValue((value) => ++value), 50), []);
+export function MyNodeDemo() {
+  const chartState = useChartState()
+  const chartDispatch = useChartDispatch()
+  const [val, setValue] = React.useState(0)
+  const forceUpdate = React.useCallback(throttle(() => setValue((value) => ++value), 50), [])
 
   const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => {
-    chartDispatch(actionFunc(...args));
-    forceUpdate();
-  }) as typeof actions;
+    chartDispatch(actionFunc(...args))
+    forceUpdate()
+  }) as typeof actions
 
   return (
     <Page>
@@ -375,13 +385,13 @@ export const MyNodeDemo = () => {
         }}
       />
     </Page>
-  );
-};
+  )
+}
 
-export const Demo = () => {
+export function Demo() {
   return (
     <ChartProvider>
       <MyNodeDemo />
     </ChartProvider>
-  );
-};
+  )
+}
