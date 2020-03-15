@@ -1,8 +1,11 @@
+import { cloneDeep, mapValues } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlowChartWithState, INodeDefaultProps, INodeInnerDefaultProps } from '../src'
+import { FlowChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, LinkDefault } from '../src'
+import * as actions from '../src/container/actions'
 import { Page } from './components'
 import { chartSimple } from './misc/exampleChartState'
+
 
 // const DarkBox = styled.div`
 //   position: absolute;
@@ -59,6 +62,44 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
   }
 }
 
+const Label = styled.div`
+  position: absolute;
+`
+
+const Button = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 5px;
+  height: 15px;
+  width: 15px;
+  transform: translate(50%, -50%);
+  background: red;
+  color: white;
+  border-radius: 50%;
+  transition: 0.3s ease all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,.1);
+  }
+`
+
+const LabelContent = styled.div`
+  padding: 5px 10px;
+  background: cornflowerblue;
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+`
+
 /**
  * Create the custom component,
  * Make sure it has the same prop signature
@@ -66,7 +107,7 @@ const NodeInnerCustom = ({ node, config }: INodeInnerDefaultProps) => {
  */
 const NodeCustom = React.forwardRef(({ node, children, ...otherProps }: INodeDefaultProps, ref: React.Ref<HTMLDivElement>) => {
   // console.log("children: ", children);
-  console.log({node})
+  // console.log({node})
   return (
     <LightBox ref={ref} {...otherProps}>
       {children}
@@ -74,16 +115,50 @@ const NodeCustom = React.forwardRef(({ node, children, ...otherProps }: INodeDef
   )
 })
 
-export const CustomNodeDemo = () => {
+const LinkCustom = (stateActions: typeof actions) => (props: ILinkDefaultProps) => {
+  const { startPos, endPos, onLinkClick, link } = props
+  const centerX = startPos.x + (endPos.x - startPos.x) / 2
+  const centerY = startPos.y + (endPos.y - startPos.y) / 2
   return (
-    <Page>
-      <FlowChartWithState
-        initialValue={chartSimple}
-        Components={ {
-          Node: NodeCustom,
-          NodeInner: NodeInnerCustom,
-        }}
-      />
-    </Page>
+    <>
+      <LinkDefault {...props} />
+      <Label style={{ left: centerX, top: centerY }}>
+          { props.link.properties && props.link.properties.label && (
+            <LabelContent>{props.link.properties && props.link.properties.label}</LabelContent>
+          )}
+        <Button
+          onClick={(e) => {
+            console.log("clicked button")
+            onLinkClick({ linkId: link.id })
+            // stateActions.onDeleteKey({})
+            e.stopPropagation()
+          }}
+        >
+          x
+        </Button>
+      </Label>
+    </>
   )
+}
+
+export class CustomNodeDemo extends React.Component {
+  public state = cloneDeep(chartSimple)
+
+  public render() {
+    const chart = this.state
+    const stateActions = mapValues(actions, (func: any) => (...args: any) => this.setState(func(...args))) as typeof actions
+    return (
+      <Page>
+        <FlowChart
+          chart={chart}
+          callbacks={stateActions}
+          Components={{
+            Node: NodeCustom,
+            NodeInner: NodeInnerCustom,
+            Link: LinkCustom(stateActions),
+          }}
+        />
+      </Page>
+    )
+  }
 }

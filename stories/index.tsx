@@ -21,7 +21,7 @@ storiesOf('State', module)
 
 storiesOf('Custom Components', module)
   .add('Node Inner', () => <CustomNodeInnerDemo />)
-  .add('Node', CustomNodeDemo)
+  .add('Node -- Custom', () => <CustomNodeDemo />)
   .add('Port', CustomPortDemo)
   .add('Canvas Outer', CustomCanvasOuterDemo)
   .add('Canvas Link', () => <CustomLinkDemo />)
