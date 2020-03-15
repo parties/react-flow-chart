@@ -1,4 +1,4 @@
-import { cloneDeep, mapValues, get } from 'lodash'
+import { cloneDeep, mapValues, get, throttle } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components'
 import { FlowChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, LinkDefault, IChart, IOnCanvasClick } from '../src'
@@ -201,6 +201,8 @@ const LinkCustom = (stateActions: typeof actions) => (props: ILinkDefaultProps) 
   const [isEditing, setIsEditing] = React.useState(false)
   const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '')
 
+  const dispatch = useChartDispatch();
+
   return (
     <>
       <LinkDefault {...props} />
@@ -303,17 +305,33 @@ function useChartDispatch () {
   return context;
 }
 
+function useForceUpdate(){
+  const [value, setValue] = React.useState(0); // integer state
+  return () => setValue(value => ++value); // update the state to force render
+}
+
 export const MyNodeDemo = () => {
   const chartState = useChartState();
   const chartDispatch = useChartDispatch();
+  const [val, setValue] = React.useState(0);
+  const forceUpdate = React.useCallback(throttle(() => setValue((value) => ++value), 50), []);
 
-  const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => chartDispatch(actionFunc(...args))) as typeof actions;
+  const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => {
+    chartDispatch(actionFunc(...args));
+    forceUpdate();
+  }) as typeof actions;
 
   return (
     <Page>
+      <button onClick={() => console.log(chartState)}>Log state</button>
       <FlowChart
         chart={chartState}
         callbacks={stateActions}
+        Components={{
+          Node: NodeCustom,
+          NodeInner: NodeInnerCustom,
+          Link: LinkCustom(stateActions),
+        }}
       />
     </Page>
   )
