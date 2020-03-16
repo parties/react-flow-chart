@@ -1,3 +1,4 @@
+import 'typeface-roboto'
 import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
 import * as React from 'react'
 import { GithubPicker } from 'react-color'
@@ -7,6 +8,7 @@ import * as actions from '../src/container/actions'
 import { Page } from './components'
 import { chartSimple } from './misc/exampleChartState'
 import { chartDemo } from './misc/demo-state'
+import TextField from '@material-ui/core/TextField'
 
 // const DarkBox = styled.div`
 //   position: absolute;
@@ -135,14 +137,13 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
       {
         isEditing ? (
           <NodeEditContainer data-id="NodeEditContainer">
-            <Input
+            <TextField
               data-id="Input"
-              type="text"
               ref={inputRef}
               defaultValue={node.properties.label}
               onKeyDown={(e: React.KeyboardEvent) => {
                 // block delete key from deleting the node
-                if (e.key === '8') {
+                if (e.which === 8) {
                   e.stopPropagation()
                 }
 
@@ -155,7 +156,7 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
                           ...node,
                           properties: {
                             ...node.properties,
-                            label: inputRef.current && inputRef.current.value,
+                            label: get(e, 'target.value'),
                           },
                         },
                       },
@@ -225,6 +226,16 @@ const NodeCustom = React.forwardRef(function _NodeCustom({ node, children, ...ot
   )
 })
 
+const LinkContainer = styled.div`
+  position: relative;
+`
+
+const LinkToolbox = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+`
+
 function LinkCustom(props: ILinkDefaultProps) {
   const { startPos, endPos, onLinkClick, link } = props
   const centerX = startPos.x + (endPos.x - startPos.x) / 2
@@ -245,7 +256,14 @@ function LinkCustom(props: ILinkDefaultProps) {
   }, [inputRef.current, isEditing])
 
   return (
-    <>
+    <LinkContainer
+      data-id="LinkContainer"
+      onDoubleClick={(event) => {
+        event.stopPropagation()
+
+        setIsEditing(true)
+      }}
+    >
       <LinkDefault className="link-shadow" {...props} />
       <Label style={{ left: centerX, top: centerY }}>
         {props.link.properties && props.link.properties.label && !isEditing && (
@@ -262,14 +280,15 @@ function LinkCustom(props: ILinkDefaultProps) {
           </LabelContent>
         )}
         {isEditing && (
-          <Input
+          <TextField
+            label="Label"
             onDoubleClick={(event) => event.stopPropagation()}
             type="text"
             ref={inputRef}
             defaultValue={link.properties.label}
             onKeyDown={(e: React.KeyboardEvent) => {
               // block delete key from deleting the node
-              if (e.key === '8') {
+              if (e.which === 8) {
                 e.stopPropagation()
               }
 
@@ -282,7 +301,7 @@ function LinkCustom(props: ILinkDefaultProps) {
                         ...link,
                         properties: {
                           ...link.properties,
-                          label: inputRef.current && inputRef.current.value,
+                          label: get(e, 'target.value'),
                         },
                       },
                     },
@@ -298,21 +317,24 @@ function LinkCustom(props: ILinkDefaultProps) {
           />
         )}
 
-        <Button
-          onClick={(event) => {
-            // remove link
-            event.stopPropagation()
+        <LinkToolbox data-id="LinkToolbox">
+          <Button
+            data-id="Button"
+            onClick={(event) => {
+              // remove link
+              event.stopPropagation()
 
-            const newChart = cloneDeep(chartState)
-            delete newChart.links[link.id]
+              const newChart = cloneDeep(chartState)
+              delete newChart.links[link.id]
 
-            chartDispatch(newChart)
-          }}
-        >
-          x
-        </Button>
+              chartDispatch(newChart)
+            }}
+          >
+            x
+          </Button>
+        </LinkToolbox>
       </Label>
-    </>
+    </LinkContainer>
   )
 }
 
