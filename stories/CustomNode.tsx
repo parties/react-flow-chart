@@ -224,85 +224,98 @@ const NodeCustom = React.forwardRef(function _NodeCustom({ node, children, ...ot
   )
 })
 
-function LinkCustom(stateActions: typeof actions) {
-  return (props: ILinkDefaultProps) => {
-    const { startPos, endPos, onLinkClick, link } = props
-    const centerX = startPos.x + (endPos.x - startPos.x) / 2
-    const centerY = startPos.y + (endPos.y - startPos.y) / 2
+function LinkCustom(props: ILinkDefaultProps) {
+  const { startPos, endPos, onLinkClick, link } = props
+  const centerX = startPos.x + (endPos.x - startPos.x) / 2
+  const centerY = startPos.y + (endPos.y - startPos.y) / 2
 
-    const [isEditing, setIsEditing] = React.useState(false)
-    const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '')
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '')
 
-    const chartState = useChartState()
-    const chartDispatch = useChartDispatch()
+  const chartState = useChartState()
+  const chartDispatch = useChartDispatch()
 
-    const inputRef = React.createRef<HTMLInputElement>()
+  const inputRef = React.createRef<HTMLInputElement>()
 
-    React.useEffect(() => {
-      if (inputRef.current && isEditing) {
-        inputRef.current.focus()
-      }
-    }, [inputRef.current, isEditing])
+  React.useEffect(() => {
+    if (inputRef.current && isEditing) {
+      inputRef.current.focus()
+    }
+  }, [inputRef.current, isEditing])
 
-    return (
-      <>
-        <LinkDefault {...props} />
-        <Label style={{ left: centerX, top: centerY }}>
-          {props.link.properties && props.link.properties.label && !isEditing && (
-            <LabelContent
-              onDoubleClick={(event) => {
-                event.stopPropagation()
-                setIsEditing(true)
-              }}
-              onClick={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              {props.link.properties && props.link.properties.label}
-            </LabelContent>
-          )}
-          {isEditing && (
-            <Input
-              onDoubleClick={(event) => event.stopPropagation()}
-              type="text"
-              ref={inputRef}
-              defaultValue={link.properties.label}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                // block delete key from deleting the node
-                if (e.key === '8') {
-                  e.stopPropagation()
-                }
+  return (
+    <>
+      <LinkDefault className="link-shadow" {...props} />
+      <Label style={{ left: centerX, top: centerY }}>
+        {props.link.properties && props.link.properties.label && !isEditing && (
+          <LabelContent
+            onDoubleClick={(event) => {
+              event.stopPropagation()
+              setIsEditing(true)
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            {props.link.properties && props.link.properties.label}
+          </LabelContent>
+        )}
+        {isEditing && (
+          <Input
+            onDoubleClick={(event) => event.stopPropagation()}
+            type="text"
+            ref={inputRef}
+            defaultValue={link.properties.label}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              // block delete key from deleting the node
+              if (e.key === '8') {
+                e.stopPropagation()
+              }
 
-                // enter key will submit the value
-                if (e.which === 13) {
-                  chartDispatch(
-                    mergeWith(chartState, {
-                      links: {
-                        [link.id]: {
-                          ...link,
-                          properties: {
-                            ...link.properties,
-                            label: inputRef.current && inputRef.current.value,
-                          },
+              // enter key will submit the value
+              if (e.which === 13) {
+                chartDispatch(
+                  mergeWith(chartState, {
+                    links: {
+                      [link.id]: {
+                        ...link,
+                        properties: {
+                          ...link.properties,
+                          label: inputRef.current && inputRef.current.value,
                         },
                       },
-                    }),
-                  )
+                    },
+                  }),
+                )
 
-                  setIsEditing(false)
-                }
-              }}
-              onClick={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-            />
-          )}
-        </Label>
-      </>
-    )
-  }
+                setIsEditing(false)
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          />
+        )}
+
+        <Button
+          onClick={(event) => {
+            // remove link
+            event.stopPropagation()
+
+            const newChart = cloneDeep(chartState)
+            delete newChart.links[link.id]
+
+            chartDispatch(newChart)
+          }}
+        >
+          x
+        </Button>
+      </Label>
+    </>
+  )
 }
 
+/*
 export class CustomNodeDemo extends React.Component {
   public state = cloneDeep(chartSimple);
 
@@ -317,7 +330,7 @@ export class CustomNodeDemo extends React.Component {
           Components={{
             Node: NodeCustom,
             NodeInner: NodeInnerCustom,
-            Link: LinkCustom(stateActions),
+            Link: LinkCustom,
           }}
         />
       </Page>
@@ -346,6 +359,7 @@ enum EChartActionTypes {
   onNodeMouseLeave = 'onNodeMouseLeave',
   onNodeSizeChange = 'onNodeSizeChange',
 }
+*/
 
 type Dispatch = React.Dispatch<React.SetStateAction<IChart>>
 
@@ -407,7 +421,7 @@ export function MyNodeDemo() {
         Components={{
           Node: NodeCustom,
           NodeInner: NodeInnerCustom,
-          Link: LinkCustom(stateActions),
+          Link: LinkCustom,
         }}
       />
     </Page>

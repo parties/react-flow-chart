@@ -5,9 +5,9 @@
     "tslint-react"
   ],
   "rules": {
-    "semicolon": [true, "always"],
+    "semicolon": [true, "never"],
     "object-literal-sort-keys": false,
-    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
+    "trailing-comma": [false, {"multiline": "always", "singleline": "never"}],
     "jsx-no-lambda": false,
     "jsx-no-multiline-js": false,
     "quotemark": [true, "single", "jsx-double"],
