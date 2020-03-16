@@ -131,10 +131,12 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
   }, [inputRef.current, isEditing])
 
   const isSelected = chartState.selected.id === node.id
+  const isHovered = chartState.hovered.id === node.id
 
   return (
     <Outer
       isSelected={isSelected}
+      isHovered={isHovered}
       color={node.properties.color}
       data-id="NodeInnerCustom__Outer"
     >

@@ -9,6 +9,7 @@ export interface IPortDefaultProps {
   isHovered: boolean
   isLinkSelected: boolean
   isLinkHovered: boolean
+  isNodeHovered: boolean
 }
 
 const PortDefaultOuter = styled.div`
@@ -25,18 +26,21 @@ const PortDefaultOuter = styled.div`
   }
 `
 
-const PortDefaultInner = styled.div<{ active: boolean }>`
+const PortDefaultInner = styled.div<{ active: boolean, hover: boolean }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background:  ${(props) => props.active ? 'cornflowerblue' : 'grey' };
+  background:  ${(props) => props.active ? 'cornflowerblue' : 'grey'};
   cursor: pointer;
+
+  opacity: ${(props) => props.hover ? '1' : '0.06'};
 `
 
-export const PortDefault = ({ isLinkSelected, isLinkHovered, config }: IPortDefaultProps) => (
+export const PortDefault = ({ isNodeHovered, isLinkSelected, isLinkHovered, config }: IPortDefaultProps) => (
   <PortDefaultOuter>
     <PortDefaultInner
       active={!config.readonly && (isLinkSelected || isLinkHovered)}
+      hover={isNodeHovered}
     />
   </PortDefaultOuter>
 )

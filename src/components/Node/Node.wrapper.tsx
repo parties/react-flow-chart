@@ -23,6 +23,7 @@ export interface INodeWrapperProps {
   hovered: ISelectedOrHovered | undefined
   selectedLink: ILink | undefined
   hoveredLink: ILink | undefined
+  hoveredNode: INode | undefined
   isSelected: boolean
   NodeInner: React.FunctionComponent<INodeInnerDefaultProps>
   Ports: React.FunctionComponent<IPortsDefaultProps>
@@ -59,6 +60,7 @@ export function NodeWrapper({
   selectedLink,
   hovered,
   hoveredLink,
+  hoveredNode,
   onPortPositionChange,
   onLinkStart,
   onLinkMove,
@@ -138,6 +140,7 @@ export function NodeWrapper({
             selectedLink={selectedLink}
             hoveredLink={hoveredLink}
             hovered={hovered}
+            hoveredNode={hoveredNode}
             node={node}
             port={node.ports[portId]}
             Component={Port}

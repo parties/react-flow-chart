@@ -63,7 +63,7 @@ export interface IFlowChartProps {
 }
 
 export const FlowChart = (props: IFlowChartProps) => {
-  const [ canvasSize, setCanvasSize ] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 })
+  const [canvasSize, setCanvasSize] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 })
 
   const {
     chart,
@@ -140,7 +140,7 @@ export const FlowChart = (props: IFlowChartProps) => {
       onSizeChange={(width, height) => setCanvasSize({ width, height })}
       {...canvasCallbacks}
     >
-      { linksInView.map((linkId) => {
+      {linksInView.map((linkId) => {
         const isSelected = !config.readonly && selected.type === 'link' && selected.id === linkId
         const isHovered = !config.readonly && hovered.type === 'link' && hovered.id === linkId
         const fromNodeId = links[linkId].from.nodeId
@@ -161,7 +161,7 @@ export const FlowChart = (props: IFlowChartProps) => {
           />
         )
       })}
-      { nodesInView.map((nodeId) => {
+      {nodesInView.map((nodeId) => {
         const isSelected = selected.type === 'node' && selected.id === nodeId
         const selectedLink = getSelectedLinkForNode(selected, nodeId, links)
         const hoveredLink = getSelectedLinkForNode(hovered, nodeId, links)
@@ -178,6 +178,7 @@ export const FlowChart = (props: IFlowChartProps) => {
             hovered={hoveredLink ? hovered : undefined}
             selectedLink={selectedLink}
             hoveredLink={hoveredLink}
+            hoveredNode={hovered}
             NodeInner={NodeInner}
             Ports={Ports}
             Port={Port}
@@ -186,7 +187,7 @@ export const FlowChart = (props: IFlowChartProps) => {
           />
         )
       })
-    }
+      }
     </CanvasWrapper>
   )
 }
