@@ -59,7 +59,14 @@ export const onLinkMove: IStateCallback<IOnLinkMove> = ({ linkId, toPosition }) 
 export const onLinkComplete: IStateCallback<IOnLinkComplete> = (props) => {
   const { linkId, fromNodeId, fromPortId, toNodeId, toPortId, config = {} } = props
   return (chart: IChart): IChart => {
-    if (!config.readonly && (config.validateLink ? config.validateLink({ ...props, chart }) : true) && [fromNodeId, fromPortId].join() !== [toNodeId, toPortId].join()) {
+    if (
+      !config.readonly && (config.validateLink ? config.validateLink({ ...props, chart }) : true)
+      // block loop-backs to the same -port-
+      && [fromNodeId, fromPortId].join() !== [toNodeId, toPortId].join()
+
+      // block loop-backs to the same -node-
+      && fromNodeId !== toNodeId
+    ) {
       chart.links[linkId].to = {
         nodeId: toNodeId,
         portId: toPortId,
@@ -79,6 +86,11 @@ export const onLinkCancel: IStateCallback<IOnLinkCancel> = ({ linkId }) => (char
 export const onLinkMouseEnter: IStateCallback<IOnLinkMouseEnter> = ({ linkId }) => (chart: IChart) => {
   // Set the link to hover
   const link = chart.links[linkId]
+
+  if (!link) {
+    return chart
+  }
+
   // Set the connected ports to hover
   if (link.to.nodeId && link.to.portId) {
     if (chart.hovered.type !== 'link' || chart.hovered.id !== linkId) {

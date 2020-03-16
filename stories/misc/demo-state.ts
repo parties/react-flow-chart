@@ -162,6 +162,9 @@ export const chartDemo: IChart = {
         nodeId: 'node4',
         portId: 'top',
       },
+      properties: {
+        label: 'another example link label',
+      },
     },
   },
   selected: {},

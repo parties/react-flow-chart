@@ -25,7 +25,7 @@ const LightBox = styled.div`
   // border: 2px solid rgba(100, 100, 100, 0.5);
 `
 
-const Outer = styled.div<{ isSelected: boolean }>`
+const Outer = styled.div<{ isSelected: boolean, isHovered: boolean }>`
   padding: 20px 30px;
   border-radius: 10px;
   background: ${(props) => props.color || '#fff'};
@@ -87,7 +87,7 @@ const LabelContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 16px;
   cursor: pointer;
 `
 
@@ -133,13 +133,18 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
   const isSelected = chartState.selected.id === node.id
 
   return (
-    <Outer isSelected={isSelected} color={node.properties.color} data-id="NodeInnerCustom__Outer">
+    <Outer
+      isSelected={isSelected}
+      color={node.properties.color}
+      data-id="NodeInnerCustom__Outer"
+    >
       {
         isEditing ? (
           <NodeEditContainer data-id="NodeEditContainer">
             <TextField
               data-id="Input"
               ref={inputRef}
+              autoFocus={true}
               defaultValue={node.properties.label}
               onKeyDown={(e: React.KeyboardEvent) => {
                 // block delete key from deleting the node
@@ -281,9 +286,9 @@ function LinkCustom(props: ILinkDefaultProps) {
         )}
         {isEditing && (
           <TextField
+            autoFocus={true}
             label="Label"
             onDoubleClick={(event) => event.stopPropagation()}
-            type="text"
             ref={inputRef}
             defaultValue={link.properties.label}
             onKeyDown={(e: React.KeyboardEvent) => {
@@ -338,59 +343,14 @@ function LinkCustom(props: ILinkDefaultProps) {
   )
 }
 
-/*
-export class CustomNodeDemo extends React.Component {
-  public state = cloneDeep(chartSimple);
-
-  public render() {
-    const chart = this.state
-    const stateActions = mapValues(actions, (func: any) => (...args: any) => this.setState(func(...args))) as typeof actions
-    return (
-      <Page>
-        <FlowChart
-          chart={chart}
-          callbacks={stateActions}
-          Components={{
-            Node: NodeCustom,
-            NodeInner: NodeInnerCustom,
-            Link: LinkCustom,
-          }}
-        />
-      </Page>
-    )
-  }
-}
-
-enum EChartActionTypes {
-  onDragNode = 'onDragNode',
-  onDragNodeStop = 'onDragNodeStop',
-  onDragCanvas = 'onDragCanvas',
-  onCanvasDrop = 'onCanvasDrop',
-  onDragCanvasStop = 'onDragCanvasStop',
-  onLinkStart = 'onLinkStart',
-  onLinkMove = 'onLinkMove',
-  onLinkComplete = 'onLinkComplete',
-  onLinkCancel = 'onLinkCancel',
-  onPortPositionChange = 'onPortPositionChange',
-  onLinkMouseEnter = 'onLinkMouseEnter',
-  onLinkMouseLeave = 'onLinkMouseLeave',
-  onLinkClick = 'onLinkClick',
-  onCanvasClick = 'onCanvasClick',
-  onDeleteKey = 'onDeleteKey',
-  onNodeClick = 'onNodeClick',
-  onNodeMouseEnter = 'onNodeMouseEnter',
-  onNodeMouseLeave = 'onNodeMouseLeave',
-  onNodeSizeChange = 'onNodeSizeChange',
-}
-*/
-
 type Dispatch = React.Dispatch<React.SetStateAction<IChart>>
 
 const ChartStateContext = React.createContext<IChart | undefined>(undefined)
 const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined)
 
 function ChartProvider({ children }) {
-  const [state, dispatch] = React.useState(cloneDeep(chartDemo))
+  const prevChart: IChart = JSON.parse(window.localStorage.getItem('chart') || "") as IChart
+  const [state, dispatch] = React.useState<IChart>(prevChart ? prevChart : cloneDeep(chartDemo))
 
   return (
     <ChartStateContext.Provider value={state}>
@@ -434,6 +394,10 @@ export function MyNodeDemo() {
     chartDispatch(actionFunc(...args))
     forceUpdate()
   }) as typeof actions
+
+  React.useEffect(() => {
+    window.localStorage.setItem('chart', JSON.stringify(chartState))
+  }, [chartState])
 
   return (
     <Page>
