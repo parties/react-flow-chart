@@ -1,7 +1,7 @@
 import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
 import * as React from 'react'
 import { GithubPicker } from 'react-color'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src'
 import * as actions from '../src/container/actions'
 import { Page } from './components'
@@ -19,13 +19,22 @@ const LightBox = styled.div`
   background: #fff;
   color: #000;
   border-radius: 10px;
-  border: 2px solid rgba(100, 100, 100, 0.5);
+  // border: 2px solid rgba(100, 100, 100, 0.5);
 `
 
-const Outer = styled.div`
+const Outer = styled.div<{ isSelected: boolean }>`
   padding: 20px 30px;
   border-radius: 10px;
   background: ${(props) => props.color || '#fff'};
+
+  /* minor box shadow */
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
+  transition: all 150ms ease-in-out;
+
+  ${(props) => props.isSelected && css`
+    box-shadow: 0 10px 10px rgba(0,0,0,.1);
+    margin-top: -1px
+  `}
 `
 
 const NodeEditContainer = styled.div`
@@ -35,10 +44,10 @@ const NodeEditContainer = styled.div`
 `
 
 const Input = styled.input`
-  padding: 10px;
   border: 1px solid cornflowerblue;
   width: 100%;
   border-radius: 2px;
+  font-size: 16px;
 `
 
 const Label = styled.div`
@@ -79,13 +88,21 @@ const LabelContent = styled.div`
   cursor: pointer;
 `
 
-const ColorButton = styled.div`
-  height: 30px;
+const ColorButtonContainer = styled.div`
+  height: 22px;
   width: 30px;
   border: 1px solid black;
   margin-left: 10px;
   flex: 0 0 auto;
   border-radius: 2px;
+
+  position: relative;
+`
+
+const ColorButton = styled.div`
+  position: absolute;
+  z-index: 2;
+  top: 40px;
 `
 
 /**
@@ -99,6 +116,8 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
 
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
+  // @ts-ignore
+  window.chart = chartState
 
   const inputRef = React.createRef<HTMLInputElement>()
 
@@ -108,12 +127,15 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
     }
   }, [inputRef.current, isEditing])
 
+  const isSelected = chartState.selected.id === node.id
+
   return (
-    <Outer color={node.properties.color}>
+    <Outer isSelected={isSelected} color={node.properties.color} data-id="NodeInnerCustom__Outer">
       {
         isEditing ? (
-          <NodeEditContainer>
+          <NodeEditContainer data-id="NodeEditContainer">
             <Input
+              data-id="Input"
               type="text"
               ref={inputRef}
               defaultValue={node.properties.label}
@@ -147,9 +169,9 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
               onMouseDown={(e) => e.stopPropagation()}
             />
 
-            <ColorButton onClick={() => setShowColor(true)}>
+            <ColorButtonContainer onClick={() => setShowColor(true)}>
               {showColor && (
-                <div style={{ position: 'absolute', zIndex: 2, top: 70 }}>
+                <ColorButton>
                   <GithubPicker
                     onChangeComplete={(color) => {
                       chartDispatch(
@@ -168,9 +190,9 @@ function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
                       setShowColor(false)
                     }}
                   />
-                </div>
+                </ColorButton>
               )}
-            </ColorButton>
+            </ColorButtonContainer>
           </NodeEditContainer>
         ) : (
             <span
@@ -228,7 +250,10 @@ function LinkCustom(stateActions: typeof actions) {
         <Label style={{ left: centerX, top: centerY }}>
           {props.link.properties && props.link.properties.label && !isEditing && (
             <LabelContent
-              onDoubleClick={() => setIsEditing(true)}
+              onDoubleClick={(event) => {
+                event.stopPropagation()
+                setIsEditing(true)
+              }}
               onClick={(e) => e.stopPropagation()}
               onMouseUp={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
@@ -238,6 +263,7 @@ function LinkCustom(stateActions: typeof actions) {
           )}
           {isEditing && (
             <Input
+              onDoubleClick={(event) => event.stopPropagation()}
               type="text"
               ref={inputRef}
               defaultValue={link.properties.label}

@@ -14,6 +14,7 @@ export interface ILinkDefaultProps {
   isHovered: boolean
   isSelected: boolean
   matrix?: number[][]
+  className?: string
 }
 
 export function LinkDefault({
@@ -29,6 +30,7 @@ export function LinkDefault({
   isHovered,
   isSelected,
   matrix,
+  className = "",
 }: ILinkDefaultProps) {
 
   const points = config.smartRouting ?
@@ -38,7 +40,7 @@ export function LinkDefault({
   const linkColor: string = (fromPort.properties && fromPort.properties.linkColor) || 'cornflowerblue'
 
   return (
-    <svg style={{ overflow: 'visible', position: 'absolute', cursor: 'pointer', left: 0, right: 0 }}>
+    <svg className={className} style={{ overflow: 'visible', position: 'absolute', cursor: 'pointer', left: 0, right: 0 }}>
       <circle
         r="4"
         cx={startPos.x}

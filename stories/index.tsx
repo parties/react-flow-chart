@@ -15,26 +15,26 @@ import { SelectedSidebar } from './SelectedSidebar'
 import { SmartRouting } from './SmartRouting'
 import { StressTestDemo } from './StressTest'
 
-storiesOf('State', module)
-  .add('Internal React State', InternalReactState)
-  .add('External React State', () => <ExternalReactState />)
+// storiesOf('State', module)
+//   .add('Internal React State', InternalReactState)
+//   .add('External React State', () => <ExternalReactState />)
 
 storiesOf('Custom Components', module)
-  .add('Node Inner', () => <CustomNodeInnerDemo />)
-  .add('Node -- Custom', () => <CustomNodeDemo />)
-  .add('Port', CustomPortDemo)
-  .add('Canvas Outer', CustomCanvasOuterDemo)
-  .add('Canvas Link', () => <CustomLinkDemo />)
+  // .add('Node Inner', () => <CustomNodeInnerDemo />)
+  // .add('Node -- Custom', () => <CustomNodeDemo />)
+  // .add('Port', CustomPortDemo)
+  // .add('Canvas Outer', CustomCanvasOuterDemo)
+  // .add('Canvas Link', () => <CustomLinkDemo />)
   .add('CUSTOM', () => <Demo />)
 
-storiesOf('Stress Testing', module).add('default', StressTestDemo)
+// storiesOf('Stress Testing', module).add('default', StressTestDemo)
 
-storiesOf('Sidebar', module)
-  .add('Drag and Drop', DragAndDropSidebar)
-  .add('Selected Sidebar', () => <SelectedSidebar />)
+// storiesOf('Sidebar', module)
+//   .add('Drag and Drop', DragAndDropSidebar)
+//   .add('Selected Sidebar', () => <SelectedSidebar />)
 
-storiesOf('Other Config', module)
-  .add('Snap To Grid', ConfigSnapToGridDemo)
-  .add('Link validation function', ConfigValidateLinkDemo)
-  .add('Read only mode', ReadonlyMode)
-  .add('Smart link routing', SmartRouting)
+// storiesOf('Other Config', module)
+//   .add('Snap To Grid', ConfigSnapToGridDemo)
+//   .add('Link validation function', ConfigValidateLinkDemo)
+//   .add('Read only mode', ReadonlyMode)
+//   .add('Smart link routing', SmartRouting)

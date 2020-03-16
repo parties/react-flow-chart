@@ -116,16 +116,8 @@ export const onCanvasClick: IStateCallback<IOnCanvasClick> = () => (chart: IChar
 };
 
 export const onCanvasDoubleClick: IStateCallback<IOnCanvasDoubleClick> = (event) => (chart: IChart) => {
-  const { pageX = 100, pageY = 300, clientX, clientY, screenX, screenY } = event;
+  const { pageX = 100, pageY = 300 } = event;
 
-  console.log({
-    screenX,
-    clientX,
-    nativePageX: event.nativeEvent.pageX,
-    screenY,
-    clientY,
-    nativePageY: event.nativeEvent.pageY,
-  });
   // create a new node
   const nodeId = `Node-${Object.keys(chart.nodes).length}`;
   chart.nodes[nodeId] = {
