@@ -17,7 +17,7 @@ export interface ILinkDefaultProps {
   className?: string
 }
 
-export function LinkDefault({
+export function LinkDefault ({
   config,
   link,
   startPos,
@@ -30,7 +30,7 @@ export function LinkDefault({
   isHovered,
   isSelected,
   matrix,
-  className = "",
+  className = '',
 }: ILinkDefaultProps) {
 
   const points = config.smartRouting ?

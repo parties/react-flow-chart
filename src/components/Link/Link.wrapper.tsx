@@ -18,7 +18,7 @@ export interface ILinkWrapperProps {
   matrix?: number[][]
 }
 
-export const LinkWrapper = React.memo(function _LinkWrapper({
+export const LinkWrapper = React.memo(function _LinkWrapper ({
   config,
   Component = LinkDefault,
   link,

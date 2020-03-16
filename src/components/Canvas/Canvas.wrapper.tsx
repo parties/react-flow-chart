@@ -40,7 +40,7 @@ export class CanvasWrapper extends React.Component<ICanvasWrapperProps, IState> 
 
   private ref = React.createRef<HTMLElement>()
 
-  public componentDidMount() {
+  public componentDidMount () {
     this.updateSize()
 
     if (this.ref.current) {
@@ -54,16 +54,16 @@ export class CanvasWrapper extends React.Component<ICanvasWrapperProps, IState> 
     }
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate () {
     this.updateSize()
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount () {
     window.removeEventListener('resize', this.updateSize)
     window.removeEventListener('scroll', this.updateSize)
   }
 
-  public render() {
+  public render () {
     const {
       config,
       ComponentInner,

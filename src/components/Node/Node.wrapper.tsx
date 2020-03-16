@@ -40,7 +40,7 @@ export interface INodeWrapperProps {
   onNodeMouseLeave: IOnNodeMouseLeave
 }
 
-export function NodeWrapper({
+export function NodeWrapper ({
   config,
   node,
   onDragNode,
