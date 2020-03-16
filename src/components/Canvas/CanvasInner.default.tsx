@@ -1,15 +1,15 @@
-import styled from 'styled-components';
-import { IConfig, IOnCanvasClick, IOnCanvasDoubleClick } from '../../index';
+import styled from 'styled-components'
+import { IConfig, IOnCanvasClick, IOnCanvasDoubleClick } from '../../index'
 
 export interface ICanvasInnerDefaultProps {
-  config: IConfig;
-  children: any;
-  onClick: IOnCanvasClick;
-  onDoubleClick: IOnCanvasDoubleClick;
-  tabIndex: number;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+  config: IConfig
+  children: any
+  onClick: IOnCanvasClick
+  onDoubleClick: IOnCanvasDoubleClick
+  tabIndex: number
+  onKeyDown: (e: React.KeyboardEvent) => void
+  onDrop: (e: React.DragEvent<HTMLDivElement>) => void
+  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
 }
 
 export const CanvasInnerDefault = styled.div<ICanvasInnerDefaultProps>`
@@ -18,4 +18,4 @@ export const CanvasInnerDefault = styled.div<ICanvasInnerDefaultProps>`
   width: 10000px;
   height: 10000px;
   cursor: move;
-` as any;
+` as any
