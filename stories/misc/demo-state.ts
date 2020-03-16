@@ -1,17 +1,20 @@
 import { IChart } from '../../src'
 
+const scalarX = 400
+const scalarY = 100
+
 export const chartDemo: IChart = {
   offset: {
-    x: 7,
-    y: 29
+    x: 0 + scalarX,
+    y: 0 + scalarY
   },
   nodes: {
     'node3': {
       id: 'node3',
       type: 'input-output',
       position: {
-        x: 516,
-        y: 458
+        x: 516 + scalarX,
+        y: 458 + scalarY
       },
       properties: {
         label: 'The system',
@@ -22,32 +25,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 143,
-            y: 29
+            x: 143 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 71,
-            y: 0
+            x: 71 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 71,
-            y: 58
+            x: 71 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -60,8 +63,8 @@ export const chartDemo: IChart = {
       id: 'Node-1',
       type: 'four-port',
       position: {
-        x: 451,
-        y: 156
+        x: 451 + scalarX,
+        y: 156 + scalarY
       },
       properties: {
         label: 'Sustain the water supply'
@@ -71,32 +74,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 234,
-            y: 29
+            x: 234 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 117,
-            y: 0
+            x: 117 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 117,
-            y: 58
+            x: 117 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -109,8 +112,8 @@ export const chartDemo: IChart = {
       id: 'Node-2',
       type: 'four-port',
       position: {
-        x: 911,
-        y: 456
+        x: 911 + scalarX,
+        y: 456 + scalarY
       },
       properties: {
         label: 'Store the rainwater'
@@ -120,32 +123,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 195,
-            y: 29
+            x: 195 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 98,
-            y: 0
+            x: 98 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 98,
-            y: 58
+            x: 98 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -158,8 +161,8 @@ export const chartDemo: IChart = {
       id: 'Node-3',
       type: 'four-port',
       position: {
-        x: 28,
-        y: 462
+        x: 28 + scalarX,
+        y: 462 + scalarY
       },
       properties: {
         label: 'Collect the rainwater'
@@ -169,32 +172,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 206,
-            y: 29
+            x: 206 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 103,
-            y: 0
+            x: 103 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 103,
-            y: 58
+            x: 103 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -207,8 +210,8 @@ export const chartDemo: IChart = {
       id: 'Node-4',
       type: 'four-port',
       position: {
-        x: 523,
-        y: 722
+        x: 523 + scalarX,
+        y: 722 + scalarY
       },
       properties: {
         label: 'Distribute'
@@ -218,32 +221,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 128,
-            y: 29
+            x: 128 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 64,
-            y: 0
+            x: 64 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 64,
-            y: 58
+            x: 64 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -256,8 +259,8 @@ export const chartDemo: IChart = {
       id: 'Node-5',
       type: 'four-port',
       position: {
-        x: 1248,
-        y: 306
+        x: 1248 + scalarX,
+        y: 306 + scalarY
       },
       properties: {
         label: 'Safe place',
@@ -268,32 +271,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 136,
-            y: 29
+            x: 136 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 68,
-            y: 0
+            x: 68 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 68,
-            y: 58
+            x: 68 + scalarX,
+            y: 58 + scalarY
           }
         }
       },
@@ -306,8 +309,8 @@ export const chartDemo: IChart = {
       id: 'Node-6',
       type: 'four-port',
       position: {
-        x: 1370,
-        y: 524
+        x: 1370 + scalarX,
+        y: 524 + scalarY
       },
       properties: {
         label: 'Accessible'
@@ -317,32 +320,32 @@ export const chartDemo: IChart = {
           id: 'left',
           type: 'left',
           position: {
-            x: 0,
-            y: 29
+            x: 0 + scalarX,
+            y: 29 + scalarY
           }
         },
         right: {
           id: 'right',
           type: 'right',
           position: {
-            x: 136,
-            y: 29
+            x: 136 + scalarX,
+            y: 29 + scalarY
           }
         },
         top: {
           id: 'top',
           type: 'input',
           position: {
-            x: 68,
-            y: 0
+            x: 68 + scalarX,
+            y: 0 + scalarY
           }
         },
         bottom: {
           id: 'bottom',
           type: 'output',
           position: {
-            x: 68,
-            y: 58
+            x: 68 + scalarX,
+            y: 58 + scalarY
           }
         }
       },

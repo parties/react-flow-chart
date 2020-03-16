@@ -163,11 +163,11 @@ export function createNode (id, x, y): INode {
 }
 
 export const onCanvasDoubleClick: IStateCallback<IOnCanvasDoubleClick> = (event) => (chart: IChart) => {
-  const { pageX = 100, pageY = 300 } = event
+  const { offsetX = 100, offsetY = 300 } = event.nativeEvent
 
   // create a new node
   const nodeId = `Node-${Object.keys(chart.nodes).length}`
-  chart.nodes[nodeId] = createNode(`Node-${Object.keys(chart.nodes).length}`, pageX, pageY)
+  chart.nodes[nodeId] = createNode(`Node-${Object.keys(chart.nodes).length}`, offsetX, offsetY)
 
   return chart
 }

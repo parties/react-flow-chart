@@ -2,11 +2,10 @@ import {TextField} from '@material-ui/core'
 import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
 import * as React from 'react'
 import { GithubPicker } from 'react-color'
-import styled, { css } from 'styled-components'
+import styled, { css, createGlobalStyle } from 'styled-components'
 import 'typeface-roboto'
 import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src'
 import * as actions from '../src/container/actions'
-import { Page } from './components'
 import { chartDemo } from './misc/demo-state'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
 
@@ -331,7 +330,30 @@ function LinkCustom (props: ILinkDefaultProps) {
   )
 }
 
-export function MyNodeDemo () {
+const Page = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  max-width: 100vw;
+  max-height: 100vh;
+`
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0px;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-family: sans-serif;
+  }
+
+  *, :after, :before {
+    box-sizing: inherit;
+  }
+`
+
+export function FlowChartContainer () {
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
   const [val, setValue] = React.useState(0)
@@ -343,6 +365,7 @@ export function MyNodeDemo () {
   }) as typeof actions
 
   React.useEffect(() => {
+    // backup to local storage
     window.localStorage.setItem('chart', JSON.stringify(chartState))
   }, [chartState])
 
@@ -359,6 +382,7 @@ export function MyNodeDemo () {
 
         }}
       />
+      <GlobalStyle />
     </Page>
   )
 }
@@ -366,7 +390,7 @@ export function MyNodeDemo () {
 export function FlowChartAdvanced () {
   return (
     <ChartProvider>
-      <MyNodeDemo />
+      <FlowChartContainer />
     </ChartProvider>
   )
 }
