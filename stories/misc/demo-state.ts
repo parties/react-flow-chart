@@ -1,6 +1,6 @@
 import { IChart } from '../../src'
 
-export const chartSimple: IChart = {
+export const chartDemo: IChart = {
   offset: {
     x: 0,
     y: 0,
@@ -17,20 +17,22 @@ export const chartSimple: IChart = {
         label: 'node1',
       },
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'output',
-          properties: {
-            value: 'yes',
-          },
+        left: {
+          id: 'left',
+          type: 'left',
         },
-        port2: {
-          id: 'port2',
-          type: 'output',
-          properties: {
-            value: 'no',
-          },
+        right: {
+          id: 'right',
+          type: 'right',
         },
+        top: {
+          id: 'top',
+          type: 'input'
+        },
+        bottom: {
+          id: 'bottom',
+          type: 'output'
+        }
       },
     },
     node2: {
@@ -44,21 +46,21 @@ export const chartSimple: IChart = {
         label: 'node2',
       },
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'input',
+        left: {
+          id: 'left',
+          type: 'left',
         },
-        port2: {
-          id: 'port2',
-          type: 'output',
+        right: {
+          id: 'right',
+          type: 'right',
         },
-        port3: {
-          id: 'port3',
-          type: 'right'
+        top: {
+          id: 'top',
+          type: 'input'
         },
-        port4: {
-          id: 'port4',
-          type: 'left'
+        bottom: {
+          id: 'bottom',
+          type: 'output'
         }
       },
     },
@@ -73,14 +75,22 @@ export const chartSimple: IChart = {
         label: 'node3',
       },
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'input',
+        left: {
+          id: 'left',
+          type: 'left',
         },
-        port2: {
-          id: 'port2',
-          type: 'output',
+        right: {
+          id: 'right',
+          type: 'right',
         },
+        top: {
+          id: 'top',
+          type: 'input'
+        },
+        bottom: {
+          id: 'bottom',
+          type: 'output'
+        }
       },
     },
     node4: {
@@ -94,14 +104,22 @@ export const chartSimple: IChart = {
         label: 'node4',
       },
       ports: {
-        port1: {
-          id: 'port1',
-          type: 'input',
+        left: {
+          id: 'left',
+          type: 'left',
         },
-        port2: {
-          id: 'port2',
-          type: 'output',
+        right: {
+          id: 'right',
+          type: 'right',
         },
+        top: {
+          id: 'top',
+          type: 'input'
+        },
+        bottom: {
+          id: 'bottom',
+          type: 'output'
+        }
       },
     },
   },
@@ -110,11 +128,11 @@ export const chartSimple: IChart = {
       id: 'link1',
       from: {
         nodeId: 'node1',
-        portId: 'port2',
+        portId: 'bottom',
       },
       to: {
         nodeId: 'node2',
-        portId: 'port1',
+        portId: 'top',
       },
       properties: {
         label: 'example link label',
@@ -124,11 +142,11 @@ export const chartSimple: IChart = {
       id: 'link2',
       from: {
         nodeId: 'node2',
-        portId: 'port2',
+        portId: 'bottom',
       },
       to: {
         nodeId: 'node3',
-        portId: 'port1',
+        portId: 'top',
       },
       properties: {
         label: 'another example link label',
@@ -138,11 +156,11 @@ export const chartSimple: IChart = {
       id: 'link3',
       from: {
         nodeId: 'node2',
-        portId: 'port2',
+        portId: 'bottom',
       },
       to: {
         nodeId: 'node4',
-        portId: 'port1',
+        portId: 'top',
       },
     },
   },

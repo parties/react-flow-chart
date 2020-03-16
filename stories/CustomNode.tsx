@@ -6,6 +6,7 @@ import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefa
 import * as actions from '../src/container/actions'
 import { Page } from './components'
 import { chartSimple } from './misc/exampleChartState'
+import { chartDemo } from './misc/demo-state'
 
 // const DarkBox = styled.div`
 //   position: absolute;
@@ -367,7 +368,7 @@ const ChartStateContext = React.createContext<IChart | undefined>(undefined)
 const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined)
 
 function ChartProvider({ children }) {
-  const [state, dispatch] = React.useState(cloneDeep(chartSimple))
+  const [state, dispatch] = React.useState(cloneDeep(chartDemo))
 
   return (
     <ChartStateContext.Provider value={state}>
@@ -422,6 +423,7 @@ export function MyNodeDemo() {
           Node: NodeCustom,
           NodeInner: NodeInnerCustom,
           Link: LinkCustom,
+
         }}
       />
     </Page>

@@ -7,6 +7,7 @@ import {
   IOnNodeMouseLeave, IOnNodeSizeChange, IOnPortPositionChange, IStateCallback,
 } from '../';
 import { rotate } from './utils/rotate';
+import { INode } from 'types'
 
 /**
  * This file contains actions for updating state after each of the required callbacks
@@ -115,32 +116,44 @@ export const onCanvasClick: IStateCallback<IOnCanvasClick> = () => (chart: IChar
   return chart;
 };
 
+export function createNode(id, x, y): INode {
+  return {
+    id,
+    type: 'four-port',
+    position: {
+      x,
+      y,
+    },
+    properties: {
+      label: id,
+    },
+    ports: {
+      left: {
+        id: 'left',
+        type: 'left',
+      },
+      right: {
+        id: 'right',
+        type: 'right',
+      },
+      top: {
+        id: 'top',
+        type: 'input'
+      },
+      bottom: {
+        id: 'bottom',
+        type: 'output'
+      }
+    },
+  }
+}
+
 export const onCanvasDoubleClick: IStateCallback<IOnCanvasDoubleClick> = (event) => (chart: IChart) => {
   const { pageX = 100, pageY = 300 } = event;
 
   // create a new node
   const nodeId = `Node-${Object.keys(chart.nodes).length}`;
-  chart.nodes[nodeId] = {
-    id: nodeId,
-    type: 'input-output',
-    position: {
-      x: pageX,
-      y: pageY,
-    },
-    properties: {
-      label: nodeId,
-    },
-    ports: {
-      port1: {
-        id: 'port1',
-        type: 'input',
-      },
-      port2: {
-        id: 'port2',
-        type: 'output',
-      },
-    },
-  };
+  chart.nodes[nodeId] = createNode(`Node-${Object.keys(chart.nodes).length}`, pageX, pageY)
 
   return chart;
 };
