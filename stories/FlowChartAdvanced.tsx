@@ -8,6 +8,7 @@ import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefa
 import * as actions from '../src/container/actions'
 import { chartDemo } from './misc/demo-state'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
+import { emptyChart } from './misc/empty-chart'
 
 const LightBox = styled.div`
   position: absolute;
@@ -374,7 +375,10 @@ export function FlowChartContainer() {
 
   return (
     <Page>
-      <button onClick={() => console.log(chartState)}>Log state</button>
+      <div style={{ display: 'flex' }}>
+        <button onClick={() => console.log(chartState)}>Log state</button>
+        <button onClick={() => chartDispatch(emptyChart)}>CLEAR</button>
+      </div>
       <FlowChart
         chart={chartState}
         callbacks={stateActions}
