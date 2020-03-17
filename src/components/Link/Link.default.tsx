@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition } from '../../'
+import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition, generateStraightPath } from '../../'
 
 export interface ILinkDefaultProps {
   config: IConfig
@@ -33,14 +33,31 @@ export function LinkDefault ({
   className = '',
 }: ILinkDefaultProps) {
 
-  const points = config.smartRouting ?
-    !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
-    : generateCurvePath(startPos, endPos)
+  // const points = config.smartRouting ?
+  //   !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
+  //   : generateCurvePath(startPos, endPos)
+
+  const points = generateStraightPath(startPos, endPos)
 
   const linkColor: string = (fromPort.properties && fromPort.properties.linkColor) || 'cornflowerblue'
 
   return (
     <svg className={className} style={{ overflow: 'visible', position: 'absolute', cursor: 'pointer', left: 0, right: 0 }}>
+      <defs>
+        <marker
+          id="arrow"
+          viewBox="0 0 10 10"
+          refX="15"
+          refY="5"
+          markerWidth="20"
+          markerHeight="20"
+          fill={linkColor}
+          markerUnits="userSpaceOnUse"
+          orient="auto"
+        >
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
       <circle
         r="4"
         cx={startPos.x}
@@ -53,6 +70,7 @@ export function LinkDefault ({
         stroke={linkColor}
         strokeWidth="3"
         fill="none"
+        markerEnd="url(#arrow)"
       />
       {/* Thick line to make selection easier */}
       <path

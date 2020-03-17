@@ -2,6 +2,10 @@ import * as PF from 'pathfinding'
 import { IPort, IPosition } from '../../../'
 import { MATRIX_PADDING } from '../../FlowChart/utils/grid'
 
+export const generateStraightPath = (startPos: IPosition, endPos: IPosition): string => {
+  return `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`
+}
+
 export const generateCurvePath = (startPos: IPosition, endPos: IPosition): string => {
   const width = Math.abs(startPos.x - endPos.x)
   const height = Math.abs(startPos.y - endPos.y)
@@ -9,15 +13,15 @@ export const generateCurvePath = (startPos: IPosition, endPos: IPosition): strin
   const topToBottom = startPos.y < endPos.y
   const isHorizontal = width > height
 
-  let start: IPosition
-  let end: IPosition
-  if (isHorizontal) {
-    start = leftToRight ? startPos : endPos
-    end = leftToRight ? endPos : startPos
-  } else {
-    start = topToBottom ? startPos : endPos
-    end = topToBottom ? endPos : startPos
-  }
+  let start: IPosition = startPos
+  let end: IPosition = endPos
+  // if (isHorizontal) {
+  //   start = leftToRight ? startPos : endPos
+  //   end = leftToRight ? endPos : startPos
+  // } else {
+  //   start = topToBottom ? startPos : endPos
+  //   end = topToBottom ? endPos : startPos
+  // }
 
   const curve = isHorizontal ? width / 3 : height / 3
   const curveX = isHorizontal ? curve : 0

@@ -1,4 +1,4 @@
-import {TextField} from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
 import * as React from 'react'
 import { GithubPicker } from 'react-color'
@@ -104,7 +104,7 @@ const ColorButton = styled.div`
  * Create the custom component,
  * Make sure it has the same prop signature
  */
-function NodeInnerCustom ({ node, config }: INodeInnerDefaultProps) {
+function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
   const [label, setLabel] = React.useState(node.properties.label)
   const [isEditing, setIsEditing] = React.useState(false)
   const [showColor, setShowColor] = React.useState(false)
@@ -210,7 +210,7 @@ function NodeInnerCustom ({ node, config }: INodeInnerDefaultProps) {
  * Make sure it has the same prop signature
  * You'll need to add {...otherProps} so the event listeners are added to your component
  */
-const NodeCustom = React.forwardRef(function _NodeCustom ({ node, children, ...otherProps }: INodeDefaultProps, ref: React.Ref<HTMLDivElement>) {
+const NodeCustom = React.forwardRef(function _NodeCustom({ node, children, ...otherProps }: INodeDefaultProps, ref: React.Ref<HTMLDivElement>) {
   return (
     <LightBox ref={ref} {...otherProps}>
       {children}
@@ -228,7 +228,7 @@ const LinkToolbox = styled.div`
   right: 0;
 `
 
-function LinkCustom (props: ILinkDefaultProps) {
+function LinkCustom(props: ILinkDefaultProps) {
   const { startPos, endPos, onLinkClick, link } = props
   const centerX = startPos.x + (endPos.x - startPos.x) / 2
   const centerY = startPos.y + (endPos.y - startPos.y) / 2
@@ -353,7 +353,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-export function FlowChartContainer () {
+export function FlowChartContainer() {
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
   const [val, setValue] = React.useState(0)
@@ -367,6 +367,9 @@ export function FlowChartContainer () {
   React.useEffect(() => {
     // backup to local storage
     window.localStorage.setItem('chart', JSON.stringify(chartState))
+
+    // @ts-ignore
+    window.chart = chartState
   }, [chartState])
 
   return (
@@ -387,7 +390,7 @@ export function FlowChartContainer () {
   )
 }
 
-export function FlowChartAdvanced () {
+export function FlowChartAdvanced() {
   return (
     <ChartProvider>
       <FlowChartContainer />
