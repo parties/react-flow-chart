@@ -9,6 +9,7 @@ import * as actions from '../src/container/actions'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
 import { __emptyChart } from './misc/empty-chart'
 import { Toolbar } from './components/Toolbar'
+import { EditorProvider } from './utils/editor-context'
 
 const LightBox = styled.div`
   position: absolute;
@@ -396,8 +397,10 @@ export function FlowChartContainer() {
 
 export function FlowChartAdvanced() {
   return (
-    <ChartProvider>
-      <FlowChartContainer />
-    </ChartProvider>
+    <EditorProvider>
+      <ChartProvider>
+        <FlowChartContainer />
+      </ChartProvider>
+    </EditorProvider>
   )
 }

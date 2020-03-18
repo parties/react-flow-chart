@@ -4,7 +4,10 @@ const scalarX = 400
 const scalarY = 100
 
 export const demoChartState: IChart = {
-  "hovered": {},
+  "hovered": {
+    "type": "node",
+    "id": "Node-6"
+  },
   "links": {
     "ef3bfd39-8b0f-4867-8c4e-79b4f3e245ef": {
       "id": "ef3bfd39-8b0f-4867-8c4e-79b4f3e245ef",
@@ -166,39 +169,6 @@ export const demoChartState: IChart = {
       },
       "size": {
         "width": 117,
-        "height": 58
-      }
-    },
-    "Node-1": {
-      "id": "Node-1",
-      "type": "four-port",
-      "position": {
-        "x": 61,
-        "y": 40
-      },
-      "properties": {
-        "label": "Node-1"
-      },
-      "ports": {
-        "left": {
-          "id": "left",
-          "type": "left"
-        },
-        "right": {
-          "id": "right",
-          "type": "right"
-        },
-        "top": {
-          "id": "top",
-          "type": "input"
-        },
-        "bottom": {
-          "id": "bottom",
-          "type": "output"
-        }
-      },
-      "size": {
-        "width": 112,
         "height": 58
       }
     },
@@ -398,39 +368,6 @@ export const demoChartState: IChart = {
         "height": 58
       }
     },
-    "Node-6": {
-      "id": "Node-6",
-      "type": "four-port",
-      "position": {
-        "x": 25,
-        "y": 19
-      },
-      "properties": {
-        "label": "Node-6"
-      },
-      "ports": {
-        "left": {
-          "id": "left",
-          "type": "left"
-        },
-        "right": {
-          "id": "right",
-          "type": "right"
-        },
-        "top": {
-          "id": "top",
-          "type": "input"
-        },
-        "bottom": {
-          "id": "bottom",
-          "type": "output"
-        }
-      },
-      "size": {
-        "width": 112,
-        "height": 58
-      }
-    },
     "Node-7": {
       "id": "Node-7",
       "type": "four-port",
@@ -531,8 +468,8 @@ export const demoChartState: IChart = {
     }
   },
   "offset": {
-    "x": -568,
-    "y": -631
+    "x": -562,
+    "y": -641
   },
   "selected": {},
   "properties": null
