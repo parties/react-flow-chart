@@ -8,7 +8,8 @@ import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefa
 import * as actions from '../src/container/actions'
 import { chartDemo } from './misc/demo-state'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
-import { emptyChart } from './misc/empty-chart'
+import { __emptyChart } from './misc/empty-chart'
+import { Toolbar } from './components/Toolbar'
 
 const LightBox = styled.div`
   position: absolute;
@@ -39,15 +40,10 @@ const NodeEditContainer = styled.div`
   align-items: center;
 `
 
-const Input = styled.input`
-  border: 1px solid cornflowerblue;
-  width: 100%;
-  border-radius: 2px;
-  font-size: 16px;
-`
 
 const Label = styled.div`
   position: absolute;
+  transform: translate(-50%, -50%);
 `
 
 const Button = styled.div`
@@ -105,8 +101,8 @@ const ColorButton = styled.div`
  * Create the custom component,
  * Make sure it has the same prop signature
  */
-function NodeInnerCustom({ node, config }: INodeInnerDefaultProps) {
-  const [label, setLabel] = React.useState(node.properties.label)
+function NodeInnerCustom({ node }: INodeInnerDefaultProps) {
+  const [] = React.useState(node.properties.label)
   const [isEditing, setIsEditing] = React.useState(false)
   const [showColor, setShowColor] = React.useState(false)
 
@@ -223,19 +219,21 @@ const LinkContainer = styled.div`
   position: relative;
 `
 
-const LinkToolbox = styled.div`
+const LinkToolbox = styled.div<{ isHovered: boolean }>`
   position: absolute;
   top: 0;
   right: 0;
+
+  opacity: ${props => props.isHovered ? "1.0" : "0"};
 `
 
 function LinkCustom(props: ILinkDefaultProps) {
-  const { startPos, endPos, onLinkClick, link } = props
+  const { startPos, endPos, link } = props
   const centerX = startPos.x + (endPos.x - startPos.x) / 2
   const centerY = startPos.y + (endPos.y - startPos.y) / 2
 
   const [isEditing, setIsEditing] = React.useState(false)
-  const [label, setLabel] = React.useState(get(props, 'link.properties.label') || '')
+  const [] = React.useState(get(props, 'link.properties.label') || '')
 
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
@@ -310,7 +308,7 @@ function LinkCustom(props: ILinkDefaultProps) {
           />
         )}
 
-        <LinkToolbox data-id="LinkToolbox">
+        <LinkToolbox data-id="LinkToolbox" isHovered={props.isHovered}>
           <Button
             data-id="Button"
             onClick={(event) => {
@@ -333,7 +331,7 @@ function LinkCustom(props: ILinkDefaultProps) {
 
 const Page = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: 1;
   max-width: 100vw;
   max-height: 100vh;
@@ -357,7 +355,7 @@ const GlobalStyle = createGlobalStyle`
 export function FlowChartContainer() {
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
-  const [val, setValue] = React.useState(0)
+  const [, setValue] = React.useState(0)
   const forceUpdate = React.useCallback(throttle(() => setValue((value) => ++value), 50), [])
 
   const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => {
@@ -375,10 +373,7 @@ export function FlowChartContainer() {
 
   return (
     <Page>
-      <div style={{ display: 'flex' }}>
-        <button onClick={() => console.log(chartState)}>Log state</button>
-        <button onClick={() => chartDispatch(emptyChart)}>CLEAR</button>
-      </div>
+      <Toolbar />
       <FlowChart
         chart={chartState}
         callbacks={stateActions}

@@ -2,15 +2,16 @@ import { cloneDeep, isEmpty } from 'lodash'
 import * as React from 'react'
 
 import { IChart } from '../../src'
-import { chartDemo } from '../misc/demo-state'
+import { __emptyChart } from '../misc/empty-chart'
+import { demoChartState } from '../misc/demo-chart-state'
 
 type Dispatch = React.Dispatch<React.SetStateAction<IChart>>
 
 const ChartStateContext = React.createContext<IChart | undefined>(undefined)
 const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined)
 
-export function ChartProvider ({ children }) {
-  const [state, dispatch] = React.useState<IChart>(cloneDeep(chartDemo))
+export function ChartProvider({ children }) {
+  const [state, dispatch] = React.useState<IChart>(cloneDeep(demoChartState))
 
   return (
     <ChartStateContext.Provider value={state}>
@@ -21,7 +22,7 @@ export function ChartProvider ({ children }) {
   )
 }
 
-export function useChartState () {
+export function useChartState() {
   const context = React.useContext(ChartStateContext)
   if (context === undefined) {
     throw new Error('useChartState must be used within a ChartProvider')
@@ -30,7 +31,7 @@ export function useChartState () {
   return context
 }
 
-export function useChartDispatch () {
+export function useChartDispatch() {
   const context = React.useContext(ChartDispatchContext)
   if (context === undefined) {
     throw new Error('useChartDispatch must be used within a ChartProvider')

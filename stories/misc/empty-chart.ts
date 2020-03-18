@@ -1,12 +1,12 @@
 import { IChart } from '../../src'
 
-export const emptyChart: IChart = {
+export const __emptyChart: IChart = {
   hovered: {},
   links: {},
   nodes: {},
   offset: {
-    x: 0,
-    y: 0,
+    x: -500,
+    y: -500,
   },
   selected: {},
   properties: null

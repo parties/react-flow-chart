@@ -35,6 +35,7 @@ export const onDragCanvas: IStateCallback<IOnDragCanvas> = ({ config, event, dat
 export const onDragCanvasStop: IStateCallback<IOnDragCanvasStop> = () => identity
 
 export const onLinkStart: IStateCallback<IOnLinkStart> = ({ linkId, fromNodeId, fromPortId }) => (chart: IChart): IChart => {
+  console.log('onLinkStart: ', {linkId, fromNodeId, fromPortId})
   chart.links[linkId] = {
     id: linkId,
     properties: {

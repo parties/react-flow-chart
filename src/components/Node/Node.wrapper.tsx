@@ -40,7 +40,7 @@ export interface INodeWrapperProps {
   onNodeMouseLeave: IOnNodeMouseLeave
 }
 
-export function NodeWrapper ({
+export function NodeWrapper({
   config,
   node,
   onDragNode,
@@ -70,9 +70,19 @@ export function NodeWrapper ({
   const isDragging = React.useRef(false)
 
   const onStart = React.useCallback((e: MouseEvent) => {
+
+    if (e.shiftKey) {
+      console.log('shift?', e.shiftKey)
+      e.stopPropagation()
+      e.preventDefault()
+      isDragging.current = false
+      return false
+    }
+
     // Stop propagation so the canvas does not move
     e.stopPropagation()
     isDragging.current = false
+    return
   }, [])
 
   const onDrag = React.useCallback((event: MouseEvent, data: DraggableData) => {
