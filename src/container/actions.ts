@@ -66,7 +66,7 @@ export const onLinkComplete: IStateCallback<IOnLinkComplete> = (props) => {
       && [fromNodeId, fromPortId].join() !== [toNodeId, toPortId].join()
 
       // block loop-backs to the same -node-
-      && fromNodeId !== toNodeId
+      // && fromNodeId !== toNodeId
     ) {
       chart.links[linkId].to = {
         nodeId: toNodeId,

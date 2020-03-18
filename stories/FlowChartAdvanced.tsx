@@ -6,7 +6,6 @@ import styled, { css, createGlobalStyle } from 'styled-components'
 import 'typeface-roboto'
 import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src'
 import * as actions from '../src/container/actions'
-import { chartDemo } from './misc/demo-state'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
 import { __emptyChart } from './misc/empty-chart'
 import { Toolbar } from './components/Toolbar'
@@ -225,6 +224,12 @@ const LinkToolbox = styled.div<{ isHovered: boolean }>`
   right: 0;
 
   opacity: ${props => props.isHovered ? "1.0" : "0"};
+
+  &:hover {
+    opacity: 1;
+  }
+
+  transition: opacity 100ms ease;
 `
 
 function LinkCustom(props: ILinkDefaultProps) {

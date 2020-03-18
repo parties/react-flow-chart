@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition, generateStraightPath } from '../../'
+import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition, generateStraightPath, generateLoopBackPath } from '../../'
 
 export interface ILinkDefaultProps {
   config: IConfig
@@ -17,7 +17,7 @@ export interface ILinkDefaultProps {
   className?: string
 }
 
-export function LinkDefault ({
+export function LinkDefault({
   config,
   link,
   startPos,
@@ -37,7 +37,12 @@ export function LinkDefault ({
   //   !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
   //   : generateCurvePath(startPos, endPos)
 
-  const points = generateStraightPath(startPos, endPos)
+  let points
+  if (link.from.nodeId === link.to.nodeId) {
+    points = generateLoopBackPath(startPos, endPos)
+  } else {
+    points = generateStraightPath(startPos, endPos)
+  }
 
   const linkColor: string = (fromPort.properties && fromPort.properties.linkColor) || 'cornflowerblue'
 
@@ -47,23 +52,23 @@ export function LinkDefault ({
         <marker
           id="arrow"
           viewBox="0 0 10 10"
-          refX="15"
-          refY="5"
+          refX="9"
+          refY="3"
           markerWidth="20"
           markerHeight="20"
           fill={linkColor}
           markerUnits="userSpaceOnUse"
           orient="auto"
         >
-          <path d="M 0 0 L 10 5 L 0 10 z" />
+          <path d="M 0 0 L 10 3 L 0 6 z" />
         </marker>
       </defs>
-      <circle
+      {/*<circle
         r="4"
         cx={startPos.x}
         cy={startPos.y}
         fill={linkColor}
-      />
+      />*/}
       {/* Main line */}
       <path
         d={points}
@@ -87,12 +92,12 @@ export function LinkDefault ({
           e.stopPropagation()
         }}
       />
-      <circle
+      {/*<circle
         r="4"
         cx={endPos.x}
         cy={endPos.y}
         fill={linkColor}
-      />
+      />*/}
     </svg>
   )
 }

@@ -6,6 +6,18 @@ export const generateStraightPath = (startPos: IPosition, endPos: IPosition): st
   return `M ${startPos.x} ${startPos.y} L ${endPos.x} ${endPos.y}`
 }
 
+const scalar = 200;
+export const generateLoopBackPath = (startPos: IPosition, endPos: IPosition): string => {
+  // working for top to right port
+  // need to generalize
+  return `
+    M ${startPos.x} ${startPos.y}
+    C ${(startPos.x < endPos.x) ? (startPos.x - scalar) : (startPos.x)},${(startPos.y < endPos.y) ? (startPos.y - scalar) : (startPos.y + scalar)}
+      ${endPos.x + scalar},${endPos.y}
+    ${endPos.x},${endPos.y}
+  `
+}
+
 export const generateCurvePath = (startPos: IPosition, endPos: IPosition): string => {
   const width = Math.abs(startPos.x - endPos.x)
   const height = Math.abs(startPos.y - endPos.y)
