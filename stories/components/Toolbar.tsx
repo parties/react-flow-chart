@@ -11,7 +11,7 @@ export const Toolbar = (params) => {
   const editorDispatch = useEditorDispatch()
 
   const logState = React.useCallback(() => console.log(chartState), [chartState])
-  const clearState = React.useCallback(() => chartDispatch(__emptyChart), [chartDispatch])
+  const clearState = React.useCallback(() => chartDispatch({ type: 'replaceState', payload: __emptyChart }), [chartDispatch])
   const toggleEditMode = React.useCallback(() => editorDispatch({ type: 'toggleEditMode' }), [editorDispatch])
 
   React.useEffect(() => {

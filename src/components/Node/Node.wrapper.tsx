@@ -13,6 +13,7 @@ import {
 } from '../../'
 import { noop } from '../../utils'
 import { INodeDefaultProps, NodeDefault } from './Node.default'
+import { useEditorState } from '../../../stories/utils/editor-context'
 
 export interface INodeWrapperProps {
   config: IConfig
@@ -65,13 +66,13 @@ export function NodeWrapper({
   onLinkComplete,
   onLinkCancel,
 }: INodeWrapperProps) {
+  const { isEditingFacts } = useEditorState()
   const [size, setSize] = React.useState<ISize>({ width: 0, height: 0 })
 
   const isDragging = React.useRef(false)
 
   const onStart = React.useCallback((e: MouseEvent) => {
-
-    if (e.shiftKey) {
+    if (e.shiftKey || isEditingFacts) {
       console.log('shift?', e.shiftKey)
       e.stopPropagation()
       e.preventDefault()
@@ -83,7 +84,7 @@ export function NodeWrapper({
     e.stopPropagation()
     isDragging.current = false
     return
-  }, [])
+  }, [isEditingFacts])
 
   const onDrag = React.useCallback((event: MouseEvent, data: DraggableData) => {
     isDragging.current = true

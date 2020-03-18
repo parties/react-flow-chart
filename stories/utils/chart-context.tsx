@@ -4,14 +4,15 @@ import * as React from 'react'
 import { IChart } from '../../src'
 import { __emptyChart } from '../misc/empty-chart'
 import { parentsChart } from '../misc/parents-chart-state'
+import { ChartAction, chartReducer } from './chart.reducer'
 
-type Dispatch = React.Dispatch<React.SetStateAction<IChart>>
+type Dispatch = (action: ChartAction) => void
 
 const ChartStateContext = React.createContext<IChart | undefined>(undefined)
 const ChartDispatchContext = React.createContext<Dispatch | undefined>(undefined)
 
 export function ChartProvider({ children }) {
-  const [state, dispatch] = React.useState<IChart>(cloneDeep(parentsChart))
+  const [state, dispatch] = React.useReducer(chartReducer, cloneDeep(parentsChart))
 
   return (
     <ChartStateContext.Provider value={state}>

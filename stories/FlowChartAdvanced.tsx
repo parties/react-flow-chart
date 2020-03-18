@@ -1,15 +1,15 @@
 import { TextField } from '@material-ui/core'
-import { cloneDeep, get, mapValues, mergeWith, throttle } from 'lodash'
+import { cloneDeep, get, mapValues, mergeWith, throttle, debounce } from 'lodash'
 import * as React from 'react'
 import { GithubPicker } from 'react-color'
 import styled, { css, createGlobalStyle } from 'styled-components'
 import 'typeface-roboto'
-import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault } from '../src'
+import { FlowChart, IChart, ILinkDefaultProps, INodeDefaultProps, INodeInnerDefaultProps, IOnCanvasClick, LinkDefault, ILinkBaseInput, IOnCanvasDropInput, IOnDragCanvasInput, IOnDragCanvasStopInput, IOnDragNodeInput, IOnDragNodeStopInput, IOnLinkBaseEvent, IOnLinkCompleteInput, IOnLinkMoveInput, INodeBaseInput, IOnNodeSizeChangeInput, IOnPortPositionChangeInput } from '../src'
 import * as actions from '../src/container/actions'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
 import { __emptyChart } from './misc/empty-chart'
 import { Toolbar } from './components/Toolbar'
-import { EditorProvider } from './utils/editor-context'
+import { EditorProvider, useEditorState } from './utils/editor-context'
 
 const LightBox = styled.div`
   position: absolute;
@@ -233,7 +233,7 @@ const LinkToolbox = styled.div<{ isHovered: boolean }>`
   transition: opacity 100ms ease;
 `
 
-function LinkCustom(props: ILinkDefaultProps) {
+function LinkWithLabel(props: ILinkDefaultProps) {
   const { startPos, endPos, link } = props
   const centerX = startPos.x + (endPos.x - startPos.x) / 2
   const centerY = startPos.y + (endPos.y - startPos.y) / 2
@@ -261,7 +261,13 @@ function LinkCustom(props: ILinkDefaultProps) {
         setIsEditing(true)
       }}
     >
-      <LinkDefault className="link-shadow" {...props} />
+      <LinkDefault
+        {...props}
+        onLinkClick={(input: ILinkBaseInput) => {
+          console.log('onLinkClick [LinkDefault]')
+          props.onLinkClick(input)
+        }}
+      />
       <Label style={{ left: centerX, top: centerY }}>
         {props.link.properties && props.link.properties.label && !isEditing && (
           <LabelContent
@@ -269,7 +275,10 @@ function LinkCustom(props: ILinkDefaultProps) {
               event.stopPropagation()
               setIsEditing(true)
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              console.log('onClick LabelContent')
+              e.stopPropagation()
+            }}
             onMouseUp={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
           >
@@ -324,7 +333,7 @@ function LinkCustom(props: ILinkDefaultProps) {
               const newChart = cloneDeep(chartState)
               delete newChart.links[link.id]
 
-              chartDispatch(newChart)
+              chartDispatch({ type: 'replaceState', payload: newChart })
             }}
           >
             x
@@ -359,35 +368,132 @@ const GlobalStyle = createGlobalStyle`
 `
 
 export function FlowChartContainer() {
+  const editorState = useEditorState()
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
   const [, setValue] = React.useState(0)
   const forceUpdate = React.useCallback(throttle(() => setValue((value) => ++value), 50), [])
 
-  const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => {
-    chartDispatch(actionFunc(...args))
-    forceUpdate()
-  }) as typeof actions
+  // const stateActions = mapValues(actions, (actionFunc: any) => (...args: any) => {
+  //   chartDispatch(actionFunc(...args))
+  //   forceUpdate()
+  // }) as typeof actions
 
-  React.useEffect(() => {
+  React.useEffect(debounce(() => {
     // backup to local storage
     window.localStorage.setItem('chart', JSON.stringify(chartState))
 
     // @ts-ignore
     window.chart = chartState
-  }, [chartState])
+  }, 1000), [chartState])
 
   return (
     <Page>
       <Toolbar />
       <FlowChart
         chart={chartState}
-        callbacks={stateActions}
+        callbacks={{
+          onCanvasClick: () => {
+            chartDispatch({ type: 'onCanvasClick', payload: {} })
+            forceUpdate()
+          },
+          onCanvasDoubleClick: (event) => {
+            chartDispatch({ type: 'onCanvasDoubleClick', payload: { event } })
+            forceUpdate()
+          },
+          onCanvasDrop: (input: IOnCanvasDropInput) => {
+            chartDispatch({ type: 'onCanvasDrop', payload: input })
+            forceUpdate()
+          },
+          onDeleteKey: () => {
+            if (editorState.isEditingFacts) {
+              return
+            }
+
+            chartDispatch({ type: 'onDeleteKey', payload: {} })
+            forceUpdate()
+          },
+          onDragCanvas: (input: IOnDragCanvasInput) => {
+            chartDispatch({ type: 'onDragCanvas', payload: input })
+            forceUpdate()
+          },
+          onDragCanvasStop: (input: IOnDragCanvasStopInput) => {
+            chartDispatch({ type: 'onDragCanvasStop', payload: input })
+            forceUpdate()
+          },
+          onDragNode: (payload: IOnDragNodeInput) => {
+            if (editorState.isEditingFacts) {
+              return
+            }
+
+            chartDispatch({ type: 'onDragNode', payload })
+            forceUpdate()
+          },
+          onDragNodeStop: (payload: IOnDragNodeStopInput) => {
+            if (editorState.isEditingFacts) {
+              return
+            }
+
+            chartDispatch({ type: 'onDragNodeStop', payload })
+            forceUpdate()
+          },
+          onLinkCancel: (payload: IOnLinkBaseEvent) => {
+            chartDispatch({ type: 'onLinkCancel', payload })
+            forceUpdate()
+          },
+          onLinkClick: (payload: ILinkBaseInput) => {
+            chartDispatch({ type: 'onLinkClick', payload })
+            forceUpdate()
+          },
+          onLinkComplete: (payload: IOnLinkCompleteInput) => {
+            if (editorState.isEditingFacts) {
+              return
+            }
+
+            chartDispatch({ type: 'onLinkComplete', payload })
+            forceUpdate()
+          },
+          onLinkMouseEnter: (payload: ILinkBaseInput) => {
+            chartDispatch({ type: 'onLinkMouseEnter', payload })
+            forceUpdate()
+          },
+          onLinkMouseLeave: (payload: ILinkBaseInput) => {
+            chartDispatch({ type: 'onLinkMouseLeave', payload })
+            forceUpdate()
+          },
+          onLinkMove: (payload: IOnLinkMoveInput) => {
+            chartDispatch({ type: 'onLinkMove', payload })
+            forceUpdate()
+          },
+          onLinkStart: (payload: IOnLinkBaseEvent) => {
+            chartDispatch({ type: 'onLinkStart', payload })
+            forceUpdate()
+          },
+          onNodeClick: (payload: INodeBaseInput) => {
+            chartDispatch({ type: 'onNodeClick', payload })
+            forceUpdate()
+          },
+          onNodeMouseEnter: (payload: INodeBaseInput) => {
+            chartDispatch({ type: 'onNodeMouseEnter', payload })
+            forceUpdate()
+          },
+          onNodeMouseLeave: (payload: INodeBaseInput) => {
+            chartDispatch({ type: 'onNodeMouseLeave', payload })
+            forceUpdate()
+          },
+          onNodeSizeChange: (payload: IOnNodeSizeChangeInput) => {
+            chartDispatch({ type: 'onNodeSizeChange', payload })
+            forceUpdate()
+          },
+          onPortPositionChange: (payload: IOnPortPositionChangeInput) => {
+            chartDispatch({ type: 'onPortPositionChange', payload })
+            forceUpdate()
+          },
+        }}
         Components={{
           Node: NodeCustom,
           NodeInner: NodeInnerCustom,
-          Link: LinkCustom,
-
+          Link: LinkWithLabel,
         }}
       />
       <GlobalStyle />
