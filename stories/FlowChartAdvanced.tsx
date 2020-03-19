@@ -361,10 +361,10 @@ const GlobalStyle = createGlobalStyle`
 const FactEditorView = () => {
   const chartState = useChartState()
 
-  const selectedFact = React.useMemo(() => chartState.facts[chartState.selectedFactId || ''], [chartState.facts, chartState.selectedFactId])
+  const facts = React.useMemo(() => chartState.facts, [chartState.facts])
 
   return (
-    <pre>Fact[{chartState.selectedFactId}]: {JSON.stringify(selectedFact, null, 2)}</pre>
+    <pre>Facts: {JSON.stringify(facts, null, 2)}</pre>
   )
 }
 
