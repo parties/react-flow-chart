@@ -2,7 +2,7 @@ import { IChart, IOnDragNode, IOnDragNodeStop, IOnDragCanvas, IOnDragCanvasStop,
 import * as actions from "../../src/container/actions"
 import { v4 as uuid } from 'uuid'
 import produce, { setAutoFreeze } from 'immer'
-import {mergeWith} from 'lodash'
+import {mergeWith, uniq} from 'lodash'
 
 setAutoFreeze(false)
 
@@ -92,17 +92,9 @@ export function chartReducer(state: IChart, action: ChartAction): IChart {
         const editPath = state.editPath
         const linkId = action.payload.linkId
 
-        // return mergeWith({}, state, {
-        //   facts: {
-        //     [selectedFactId]: {
-        //       [editPath]: [linkId]
-        //     }
-        //   }
-        // } as IChart)
-
         return produce(state, (draftState) => {
           const fact = draftState.facts[selectedFactId]
-          fact[editPath].push(linkId)
+          fact[editPath] = uniq([...fact[editPath], linkId])
         })
       } else {
         // * legacy
