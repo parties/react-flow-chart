@@ -3,16 +3,16 @@ import { useChartState, useChartDispatch } from '../utils/chart-context'
 import { __emptyChart } from '../misc/empty-chart'
 import { Button, Toolbar as MuiToolbar } from '@material-ui/core'
 
-export const Toolbar = (params) => {
+export const Toolbar = () => {
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
 
-  // const logState = React.useCallback(() => console.log(chartState), [chartState])
-  // const clearState = React.useCallback(() => chartDispatch({ type: 'replaceState', payload: __emptyChart }), [chartDispatch])
-  const toggleEditMode = React.useCallback(() => chartDispatch({ type: !chartState.isEditing ? 'beginEditing' : 'endEditing' }), [chartDispatch])
+  const toggleEditMode = React.useCallback(() => {
+    chartDispatch({ type: !chartState.isEditing ? 'beginEditing' : 'endEditing' })
+  }, [chartDispatch, chartState])
 
   return (
-    <MuiToolbar >
+    <MuiToolbar>
       <Button variant="contained" color={chartState.isEditing ? 'secondary' : 'primary'} onClick={toggleEditMode}>Fact Editor</Button>
       {chartState.isEditing && (
         <div>

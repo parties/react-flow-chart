@@ -343,14 +343,6 @@ function LinkWithLabel(props: ILinkDefaultProps) {
   )
 }
 
-const Page = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  max-width: 100vw;
-  max-height: 100vh;
-`
-
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0px;
@@ -364,6 +356,22 @@ const GlobalStyle = createGlobalStyle`
   *, :after, :before {
     box-sizing: inherit;
   }
+`
+
+const FactEditorView = () => {
+  const chartState = useChartState()
+
+  const selectedFact = React.useMemo(() => chartState.facts[chartState.selectedFactId || ''], [chartState.facts, chartState.selectedFactId])
+
+  return (
+    <pre>Fact[{chartState.selectedFactId}]: {JSON.stringify(selectedFact, null, 2)}</pre>
+  )
+}
+
+const Page = styled.div`
+  max-width: 100vw;
+  max-height: 100vh;
+  display: flex;
 `
 
 export function FlowChartContainer() {
@@ -387,97 +395,102 @@ export function FlowChartContainer() {
 
   return (
     <Page>
-      <Toolbar />
-      <FlowChart
-        chart={chartState}
-        callbacks={{
-          onCanvasClick: () => {
-            chartDispatch({ type: 'onCanvasClick', payload: {} })
-            forceUpdate()
-          },
-          onCanvasDoubleClick: (event) => {
-            chartDispatch({ type: 'onCanvasDoubleClick', payload: { event } })
-            forceUpdate()
-          },
-          onCanvasDrop: (input: IOnCanvasDropInput) => {
-            chartDispatch({ type: 'onCanvasDrop', payload: input })
-            forceUpdate()
-          },
-          onDeleteKey: () => {
-            chartDispatch({ type: 'onDeleteKey', payload: {} })
-            forceUpdate()
-          },
-          onDragCanvas: (input: IOnDragCanvasInput) => {
-            chartDispatch({ type: 'onDragCanvas', payload: input })
-            forceUpdate()
-          },
-          onDragCanvasStop: (input: IOnDragCanvasStopInput) => {
-            chartDispatch({ type: 'onDragCanvasStop', payload: input })
-            forceUpdate()
-          },
-          onDragNode: (payload: IOnDragNodeInput) => {
-            chartDispatch({ type: 'onDragNode', payload })
-            forceUpdate()
-          },
-          onDragNodeStop: (payload: IOnDragNodeStopInput) => {
-            chartDispatch({ type: 'onDragNodeStop', payload })
-            forceUpdate()
-          },
-          onLinkCancel: (payload: IOnLinkBaseEvent) => {
-            chartDispatch({ type: 'onLinkCancel', payload })
-            forceUpdate()
-          },
-          onLinkClick: (input: ILinkBaseInput) => {
-            chartDispatch({ type: 'onLinkClick', payload: input })
-            forceUpdate()
-          },
-          onLinkComplete: (payload: IOnLinkCompleteInput) => {
-            chartDispatch({ type: 'onLinkComplete', payload })
-            forceUpdate()
-          },
-          onLinkMouseEnter: (payload: ILinkBaseInput) => {
-            chartDispatch({ type: 'onLinkMouseEnter', payload })
-            forceUpdate()
-          },
-          onLinkMouseLeave: (payload: ILinkBaseInput) => {
-            chartDispatch({ type: 'onLinkMouseLeave', payload })
-            forceUpdate()
-          },
-          onLinkMove: (payload: IOnLinkMoveInput) => {
-            chartDispatch({ type: 'onLinkMove', payload })
-            forceUpdate()
-          },
-          onLinkStart: (payload: IOnLinkBaseEvent) => {
-            chartDispatch({ type: 'onLinkStart', payload })
-            forceUpdate()
-          },
-          onNodeClick: (payload: INodeBaseInput) => {
-            chartDispatch({ type: 'onNodeClick', payload })
-            forceUpdate()
-          },
-          onNodeMouseEnter: (payload: INodeBaseInput) => {
-            chartDispatch({ type: 'onNodeMouseEnter', payload })
-            forceUpdate()
-          },
-          onNodeMouseLeave: (payload: INodeBaseInput) => {
-            chartDispatch({ type: 'onNodeMouseLeave', payload })
-            forceUpdate()
-          },
-          onNodeSizeChange: (payload: IOnNodeSizeChangeInput) => {
-            chartDispatch({ type: 'onNodeSizeChange', payload })
-            forceUpdate()
-          },
-          onPortPositionChange: (payload: IOnPortPositionChangeInput) => {
-            chartDispatch({ type: 'onPortPositionChange', payload })
-            forceUpdate()
-          },
-        }}
-        Components={{
-          Node: NodeCustom,
-          NodeInner: NodeInnerCustom,
-          Link: LinkWithLabel,
-        }}
-      />
+      <div style={{ flex: '0 1 80%', width: 0 }}>
+        <Toolbar />
+        <FlowChart
+          chart={chartState}
+          callbacks={{
+            onCanvasClick: () => {
+              chartDispatch({ type: 'onCanvasClick', payload: {} })
+              forceUpdate()
+            },
+            onCanvasDoubleClick: (event) => {
+              chartDispatch({ type: 'onCanvasDoubleClick', payload: { event } })
+              forceUpdate()
+            },
+            onCanvasDrop: (input: IOnCanvasDropInput) => {
+              chartDispatch({ type: 'onCanvasDrop', payload: input })
+              forceUpdate()
+            },
+            onDeleteKey: () => {
+              chartDispatch({ type: 'onDeleteKey', payload: {} })
+              forceUpdate()
+            },
+            onDragCanvas: (input: IOnDragCanvasInput) => {
+              chartDispatch({ type: 'onDragCanvas', payload: input })
+              forceUpdate()
+            },
+            onDragCanvasStop: (input: IOnDragCanvasStopInput) => {
+              chartDispatch({ type: 'onDragCanvasStop', payload: input })
+              forceUpdate()
+            },
+            onDragNode: (payload: IOnDragNodeInput) => {
+              chartDispatch({ type: 'onDragNode', payload })
+              forceUpdate()
+            },
+            onDragNodeStop: (payload: IOnDragNodeStopInput) => {
+              chartDispatch({ type: 'onDragNodeStop', payload })
+              forceUpdate()
+            },
+            onLinkCancel: (payload: IOnLinkBaseEvent) => {
+              chartDispatch({ type: 'onLinkCancel', payload })
+              forceUpdate()
+            },
+            onLinkClick: (input: ILinkBaseInput) => {
+              chartDispatch({ type: 'onLinkClick', payload: input })
+              forceUpdate()
+            },
+            onLinkComplete: (payload: IOnLinkCompleteInput) => {
+              chartDispatch({ type: 'onLinkComplete', payload })
+              forceUpdate()
+            },
+            onLinkMouseEnter: (payload: ILinkBaseInput) => {
+              chartDispatch({ type: 'onLinkMouseEnter', payload })
+              forceUpdate()
+            },
+            onLinkMouseLeave: (payload: ILinkBaseInput) => {
+              chartDispatch({ type: 'onLinkMouseLeave', payload })
+              forceUpdate()
+            },
+            onLinkMove: (payload: IOnLinkMoveInput) => {
+              chartDispatch({ type: 'onLinkMove', payload })
+              forceUpdate()
+            },
+            onLinkStart: (payload: IOnLinkBaseEvent) => {
+              chartDispatch({ type: 'onLinkStart', payload })
+              forceUpdate()
+            },
+            onNodeClick: (payload: INodeBaseInput) => {
+              chartDispatch({ type: 'onNodeClick', payload })
+              forceUpdate()
+            },
+            onNodeMouseEnter: (payload: INodeBaseInput) => {
+              chartDispatch({ type: 'onNodeMouseEnter', payload })
+              forceUpdate()
+            },
+            onNodeMouseLeave: (payload: INodeBaseInput) => {
+              chartDispatch({ type: 'onNodeMouseLeave', payload })
+              forceUpdate()
+            },
+            onNodeSizeChange: (payload: IOnNodeSizeChangeInput) => {
+              chartDispatch({ type: 'onNodeSizeChange', payload })
+              forceUpdate()
+            },
+            onPortPositionChange: (payload: IOnPortPositionChangeInput) => {
+              chartDispatch({ type: 'onPortPositionChange', payload })
+              forceUpdate()
+            },
+          }}
+          Components={{
+            Node: NodeCustom,
+            NodeInner: NodeInnerCustom,
+            Link: LinkWithLabel,
+          }}
+        />
+      </div>
+      <div style={{ flex: '0 1 auto' }}>
+        <FactEditorView />
+      </div>
       <GlobalStyle />
     </Page>
   )
