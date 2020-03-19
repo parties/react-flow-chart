@@ -1,13 +1,17 @@
 import { compact, flatMap, flatten, keyBy, range } from 'lodash'
 import * as React from 'react'
 import styled from 'styled-components'
-import { FlowChartWithState } from '../src'
+import { FlowChartWithState, IChart } from '../src'
 import { Page } from './components'
 
-const getChart = (rows: number, cols: number) => {
+const getChart = (rows: number, cols: number): IChart => {
   const xyGrid = flatten(range(0, cols * 300, 300).map((x) => range(0, rows * 150, 150).map((y) => ({ x, y }))))
 
   return {
+    editPath: 'pathA',
+    isEditing: false,
+    facts: {},
+    selectedFactId: null,
     offset: {
       x: 0,
       y: 0,

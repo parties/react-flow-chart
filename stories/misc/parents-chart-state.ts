@@ -1,6 +1,10 @@
 import { IChart } from '../../src'
 
 export const parentsChart: IChart = {
+  editPath: 'pathA',
+  isEditing: false,
+  facts: {},
+  selectedFactId: null,
   "hovered": {},
   "links": {
     "51f21128-d83d-4108-a549-72760665baea": {

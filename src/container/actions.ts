@@ -35,7 +35,7 @@ export const onDragCanvas: IStateCallback<IOnDragCanvas> = ({ config, event, dat
 export const onDragCanvasStop: IStateCallback<IOnDragCanvasStop> = () => identity
 
 export const onLinkStart: IStateCallback<IOnLinkStart> = ({ linkId, fromNodeId, fromPortId }) => (chart: IChart): IChart => {
-  console.log('onLinkStart: ', {linkId, fromNodeId, fromPortId})
+  // console.log('onLinkStart: ', {linkId, fromNodeId, fromPortId})
   chart.links[linkId] = {
     id: linkId,
     properties: {
@@ -114,7 +114,7 @@ export const onLinkMouseLeave: IStateCallback<IOnLinkMouseLeave> = ({ linkId }) 
 }
 
 export const onLinkClick: IStateCallback<IOnLinkMouseLeave> = ({ linkId }) => (chart: IChart) => {
-  console.log('actions::onLinkClick')
+  // console.log('actions::onLinkClick')
   if (chart.selected.id !== linkId || chart.selected.type !== 'link') {
     chart.selected = {
       type: 'link',
@@ -191,7 +191,7 @@ export const onNodeMouseLeave: IStateCallback<IOnNodeMouseLeave> = ({ nodeId }) 
 }
 
 export const onDeleteKey: IStateCallback<IOnDeleteKey> = (...args) => (chart: IChart) => {
-  console.log('ondeletekey')
+  // console.log('ondeletekey')
   if (chart.selected.type === 'node' && chart.selected.id) {
     const node = chart.nodes[chart.selected.id]
     // Delete the connected links

@@ -9,7 +9,6 @@ import * as actions from '../src/container/actions'
 import { ChartProvider, useChartDispatch, useChartState } from './utils/chart-context'
 import { __emptyChart } from './misc/empty-chart'
 import { Toolbar } from './components/Toolbar'
-import { EditorProvider, useEditorState } from './utils/editor-context'
 
 const LightBox = styled.div`
   position: absolute;
@@ -264,7 +263,7 @@ function LinkWithLabel(props: ILinkDefaultProps) {
       <LinkDefault
         {...props}
         onLinkClick={(input: ILinkBaseInput) => {
-          console.log('onLinkClick [LinkDefault]')
+          // console.log('onLinkClick [LinkDefault]')
           props.onLinkClick(input)
         }}
       />
@@ -368,7 +367,6 @@ const GlobalStyle = createGlobalStyle`
 `
 
 export function FlowChartContainer() {
-  const editorState = useEditorState()
   const chartState = useChartState()
   const chartDispatch = useChartDispatch()
   const [, setValue] = React.useState(0)
@@ -406,10 +404,6 @@ export function FlowChartContainer() {
             forceUpdate()
           },
           onDeleteKey: () => {
-            if (editorState.isEditingFacts) {
-              return
-            }
-
             chartDispatch({ type: 'onDeleteKey', payload: {} })
             forceUpdate()
           },
@@ -422,18 +416,10 @@ export function FlowChartContainer() {
             forceUpdate()
           },
           onDragNode: (payload: IOnDragNodeInput) => {
-            if (editorState.isEditingFacts) {
-              return
-            }
-
             chartDispatch({ type: 'onDragNode', payload })
             forceUpdate()
           },
           onDragNodeStop: (payload: IOnDragNodeStopInput) => {
-            if (editorState.isEditingFacts) {
-              return
-            }
-
             chartDispatch({ type: 'onDragNodeStop', payload })
             forceUpdate()
           },
@@ -441,15 +427,11 @@ export function FlowChartContainer() {
             chartDispatch({ type: 'onLinkCancel', payload })
             forceUpdate()
           },
-          onLinkClick: (payload: ILinkBaseInput) => {
-            chartDispatch({ type: 'onLinkClick', payload })
+          onLinkClick: (input: ILinkBaseInput) => {
+            chartDispatch({ type: 'onLinkClick', payload: input })
             forceUpdate()
           },
           onLinkComplete: (payload: IOnLinkCompleteInput) => {
-            if (editorState.isEditingFacts) {
-              return
-            }
-
             chartDispatch({ type: 'onLinkComplete', payload })
             forceUpdate()
           },
@@ -503,10 +485,8 @@ export function FlowChartContainer() {
 
 export function FlowChartAdvanced() {
   return (
-    <EditorProvider>
-      <ChartProvider>
-        <FlowChartContainer />
-      </ChartProvider>
-    </EditorProvider>
+    <ChartProvider>
+      <FlowChartContainer />
+    </ChartProvider>
   )
 }

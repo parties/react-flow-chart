@@ -1,9 +1,10 @@
 import { IChart } from '../../src'
 
-const scalarX = 400
-const scalarY = 100
-
 export const demoChartState: IChart = {
+  editPath: 'pathA',
+  isEditing: false,
+  facts: {},
+  selectedFactId: null,
   "hovered": {
     "type": "node",
     "id": "Node-6"

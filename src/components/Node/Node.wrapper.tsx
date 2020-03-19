@@ -13,7 +13,7 @@ import {
 } from '../../'
 import { noop } from '../../utils'
 import { INodeDefaultProps, NodeDefault } from './Node.default'
-import { useEditorState } from '../../../stories/utils/editor-context'
+import { useChartState } from '../../../stories/utils/chart-context'
 
 export interface INodeWrapperProps {
   config: IConfig
@@ -66,7 +66,7 @@ export function NodeWrapper({
   onLinkComplete,
   onLinkCancel,
 }: INodeWrapperProps) {
-  const { isEditingFacts } = useEditorState()
+  const { isEditing: isEditingFacts } = useChartState()
   const [size, setSize] = React.useState<ISize>({ width: 0, height: 0 })
 
   const isDragging = React.useRef(false)

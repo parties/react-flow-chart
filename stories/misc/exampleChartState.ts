@@ -1,6 +1,10 @@
 import { IChart } from '../../src'
 
 export const chartSimple: IChart = {
+  editPath: 'pathA',
+  isEditing: false,
+  facts: {},
+  selectedFactId: null,
   offset: {
     x: 0,
     y: 0,

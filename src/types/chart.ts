@@ -1,5 +1,14 @@
 import { IPosition, ISize } from './generics'
 
+export type IEditPath = 'pathA' | 'pathB'
+
+export interface IFact {
+  source?: INode
+  target?: INode
+  pathA: string[]
+  pathB: string[]
+}
+
 export interface IChart {
   offset: IPosition
   nodes: {
@@ -13,6 +22,12 @@ export interface IChart {
   /** System Temp */
   selected: ISelectedOrHovered
   hovered: ISelectedOrHovered
+
+  /** Edit Facts mode */
+  isEditing: boolean
+  facts: Record<string, IFact>
+  editPath: IEditPath
+  selectedFactId: string | null
 }
 
 export interface ISelectedOrHovered {

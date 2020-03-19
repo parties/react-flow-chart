@@ -1,9 +1,18 @@
-import { IChart, IOnDragNode, IOnDragNodeStop, IOnDragCanvas, IOnDragCanvasStop, IOnLinkStart, IOnLinkMove, IOnLinkComplete, IOnLinkCancel, IOnLinkMouseEnter, IOnLinkMouseLeave, IOnCanvasClick, IOnCanvasDoubleClick, IOnNodeMouseEnter, IOnNodeMouseLeave, IOnDeleteKey, IOnNodeClick, IOnNodeSizeChange, IOnPortPositionChange, IOnCanvasDrop, IOnDragNodeInput, IOnDragNodeStopInput, IOnDragCanvasInput, IOnDragCanvasStopInput, IOnLinkBaseEvent, IOnLinkMoveInput, IOnLinkCompleteInput, ILinkBaseInput, IConfig, INodeBaseInput, IOnNodeSizeChangeInput, IOnPortPositionChangeInput, IOnCanvasDropInput } from '../../src'
+import { IChart, IOnDragNode, IOnDragNodeStop, IOnDragCanvas, IOnDragCanvasStop, IOnLinkStart, IOnLinkMove, IOnLinkComplete, IOnLinkCancel, IOnLinkMouseEnter, IOnLinkMouseLeave, IOnCanvasClick, IOnCanvasDoubleClick, IOnNodeMouseEnter, IOnNodeMouseLeave, IOnDeleteKey, IOnNodeClick, IOnNodeSizeChange, IOnPortPositionChange, IOnCanvasDrop, IOnDragNodeInput, IOnDragNodeStopInput, IOnDragCanvasInput, IOnDragCanvasStopInput, IOnLinkBaseEvent, IOnLinkMoveInput, IOnLinkCompleteInput, ILinkBaseInput, IConfig, INodeBaseInput, IOnNodeSizeChangeInput, IOnPortPositionChangeInput, IOnCanvasDropInput, IEditPath } from '../../src'
 import * as actions from "../../src/container/actions"
+import { v4 as uuid } from 'uuid'
+import produce, { setAutoFreeze } from 'immer'
+import {mergeWith} from 'lodash'
+
+setAutoFreeze(false)
 
 export type ChartAction =
   // action to fully replace the entire state object
   { type: 'replaceState', payload: IChart } |
+  { type: 'beginEditing' } |
+  { type: 'endEditing' } |
+  { type: 'setEditPath', payload: IEditPath } |
+  // standard actions
   { type: 'onCanvasClick', payload: { config?: IConfig } } |
   { type: 'onCanvasDoubleClick', payload: { event: React.MouseEvent } } |
   { type: 'onCanvasDrop', payload: IOnCanvasDropInput } |
@@ -26,7 +35,36 @@ export type ChartAction =
   { type: 'onPortPositionChange', payload: IOnPortPositionChangeInput }
 
 export function chartReducer(state: IChart, action: ChartAction): IChart {
+  if (!(/mouse/i.test(action.type))) {
+    console.log(action.type)
+  }
+
   switch (action.type) {
+    // todo: generate a new id for the new fact
+    case 'beginEditing':
+      const newFactId = uuid()
+      return produce(state, (draftState) => {
+        draftState.isEditing = true
+        draftState.selectedFactId = newFactId
+        draftState.facts[newFactId] = {
+          pathA: [],
+          pathB: [],
+          // todo: source should come from a selected node
+          source: undefined,
+          target: undefined,
+        }
+      })
+    case 'endEditing':
+      return {
+        ...state,
+        isEditing: false,
+        selectedFactId: null,
+      }
+    case 'setEditPath':
+      return {
+        ...state,
+        editPath: action.payload,
+      }
     case 'onDragNode':
       return actions.onDragNode(action.payload)(state)
     case 'onDragNodeStop':
@@ -48,7 +86,34 @@ export function chartReducer(state: IChart, action: ChartAction): IChart {
     case 'onLinkMouseLeave':
       return actions.onLinkMouseLeave(action.payload)(state)
     case 'onLinkClick':
-      return actions.onLinkClick(action.payload)(state)
+      // * handle edit mode
+      if (state.isEditing && state.selectedFactId) {
+        const selectedFactId = state.selectedFactId
+        const editPath = state.editPath
+        const linkId = action.payload.linkId
+
+        // return mergeWith({}, state, {
+        //   facts: {
+        //     [selectedFactId]: {
+        //       [editPath]: [linkId]
+        //     }
+        //   }
+        // } as IChart)
+
+        return produce(state, (draftState) => {
+          const fact = draftState.facts[selectedFactId]
+          fact[editPath].push(linkId)
+        })
+      } else {
+        // * legacy
+        // if link isn't already selected, select it
+        if (state.selected.id !== action.payload.linkId || state.selected.type !== 'link') {
+          state.selected = {
+            type: 'link',
+            id: action.payload.linkId,
+          }
+        }
+      }
     case 'onCanvasClick':
       return actions.onCanvasClick(action.payload)(state)
     case 'onCanvasDoubleClick':

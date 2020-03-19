@@ -9,5 +9,9 @@ export const __emptyChart: IChart = {
     y: -500,
   },
   selected: {},
-  properties: null
+  properties: null,
+  editPath: 'pathA',
+  isEditing: false,
+  facts: {},
+  selectedFactId: null,
 };
