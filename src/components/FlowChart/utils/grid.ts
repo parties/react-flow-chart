@@ -10,6 +10,7 @@ const getEmptyMatrix = (width: number, height: number): number[][] => {
   const matrix = []
 
   for (let i = 0; i < adjustedHeight; i++) {
+    // @ts-ignore
     matrix.push(new Array(adjustedWidth).fill(0))
   }
 

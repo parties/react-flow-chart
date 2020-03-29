@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import {
-  IChart, identity, IOnCanvasClick,
+  IChart, identity, INode, IOnCanvasClick, IOnCanvasDoubleClick,
   IOnCanvasDrop, IOnDeleteKey, IOnDragCanvas, IOnDragCanvasStop,
   IOnDragNode, IOnDragNodeStop, IOnLinkCancel, IOnLinkComplete, IOnLinkMouseEnter, IOnLinkMouseLeave, IOnLinkMove,
   IOnLinkStart, IOnNodeClick, IOnNodeMouseEnter,
@@ -35,8 +35,12 @@ export const onDragCanvas: IStateCallback<IOnDragCanvas> = ({ config, event, dat
 export const onDragCanvasStop: IStateCallback<IOnDragCanvasStop> = () => identity
 
 export const onLinkStart: IStateCallback<IOnLinkStart> = ({ linkId, fromNodeId, fromPortId }) => (chart: IChart): IChart => {
+  console.log('onLinkStart: ', {linkId, fromNodeId, fromPortId})
   chart.links[linkId] = {
     id: linkId,
+    properties: {
+      label: '',
+    },
     from: {
       nodeId: fromNodeId,
       portId: fromPortId,
@@ -56,7 +60,14 @@ export const onLinkMove: IStateCallback<IOnLinkMove> = ({ linkId, toPosition }) 
 export const onLinkComplete: IStateCallback<IOnLinkComplete> = (props) => {
   const { linkId, fromNodeId, fromPortId, toNodeId, toPortId, config = {} } = props
   return (chart: IChart): IChart => {
-    if (!config.readonly && (config.validateLink ? config.validateLink({ ...props, chart }) : true) && [fromNodeId, fromPortId].join() !== [toNodeId, toPortId].join()) {
+    if (
+      !config.readonly && (config.validateLink ? config.validateLink({ ...props, chart }) : true)
+      // block loop-backs to the same -port-
+      && [fromNodeId, fromPortId].join() !== [toNodeId, toPortId].join()
+
+      // block loop-backs to the same -node-
+      // && fromNodeId !== toNodeId
+    ) {
       chart.links[linkId].to = {
         nodeId: toNodeId,
         portId: toPortId,
@@ -76,6 +87,11 @@ export const onLinkCancel: IStateCallback<IOnLinkCancel> = ({ linkId }) => (char
 export const onLinkMouseEnter: IStateCallback<IOnLinkMouseEnter> = ({ linkId }) => (chart: IChart) => {
   // Set the link to hover
   const link = chart.links[linkId]
+
+  if (!link) {
+    return chart
+  }
+
   // Set the connected ports to hover
   if (link.to.nodeId && link.to.portId) {
     if (chart.hovered.type !== 'link' || chart.hovered.id !== linkId) {
@@ -98,6 +114,7 @@ export const onLinkMouseLeave: IStateCallback<IOnLinkMouseLeave> = ({ linkId }) 
 }
 
 export const onLinkClick: IStateCallback<IOnLinkMouseLeave> = ({ linkId }) => (chart: IChart) => {
+  console.log('actions::onLinkClick')
   if (chart.selected.id !== linkId || chart.selected.type !== 'link') {
     chart.selected = {
       type: 'link',
@@ -111,6 +128,48 @@ export const onCanvasClick: IStateCallback<IOnCanvasClick> = () => (chart: IChar
   if (chart.selected.id) {
     chart.selected = {}
   }
+  return chart
+}
+
+export function createNode (id, x, y): INode {
+  return {
+    id,
+    type: 'four-port',
+    position: {
+      x,
+      y,
+    },
+    properties: {
+      label: id,
+    },
+    ports: {
+      left: {
+        id: 'left',
+        type: 'left',
+      },
+      right: {
+        id: 'right',
+        type: 'right',
+      },
+      top: {
+        id: 'top',
+        type: 'input'
+      },
+      bottom: {
+        id: 'bottom',
+        type: 'output'
+      }
+    },
+  }
+}
+
+export const onCanvasDoubleClick: IStateCallback<IOnCanvasDoubleClick> = (event) => (chart: IChart) => {
+  const { offsetX = 100, offsetY = 300 } = event.nativeEvent
+
+  // create a new node
+  const nodeId = `Node-${Object.keys(chart.nodes).length}`
+  chart.nodes[nodeId] = createNode(`Node-${Object.keys(chart.nodes).length}`, offsetX, offsetY)
+
   return chart
 }
 
@@ -131,7 +190,8 @@ export const onNodeMouseLeave: IStateCallback<IOnNodeMouseLeave> = ({ nodeId }) 
   return chart
 }
 
-export const onDeleteKey: IStateCallback<IOnDeleteKey> = () => (chart: IChart) => {
+export const onDeleteKey: IStateCallback<IOnDeleteKey> = (...args) => (chart: IChart) => {
+  console.log('ondeletekey')
   if (chart.selected.type === 'node' && chart.selected.id) {
     const node = chart.nodes[chart.selected.id]
     // Delete the connected links

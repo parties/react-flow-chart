@@ -1,10 +1,11 @@
 import styled from 'styled-components'
-import { IConfig, IOnCanvasClick } from '../../'
+import { IConfig, IOnCanvasClick, IOnCanvasDoubleClick } from '../../index'
 
 export interface ICanvasInnerDefaultProps {
   config: IConfig
   children: any
   onClick: IOnCanvasClick
+  onDoubleClick: IOnCanvasDoubleClick
   tabIndex: number
   onKeyDown: (e: React.KeyboardEvent) => void
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void

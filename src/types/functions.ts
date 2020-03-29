@@ -1,4 +1,4 @@
-import { DraggableData } from 'react-draggable'
+import { DraggableData, DraggableEvent } from 'react-draggable'
 import { IChart, INode, IPort } from './chart'
 import { IConfig } from './config'
 import { IOffset, IPosition, ISize } from './generics'
@@ -17,17 +17,17 @@ export type IOnDragNode = (input: IOnDragNodeInput) => void
 
 export interface IOnDragCanvasInput {
   config?: IConfig
-  event: MouseEvent
+  event: DraggableEvent
   data: DraggableData
 }
 
 export type IOnDragCanvas = (input: IOnDragCanvasInput) => void
 
-export interface IOnDragNodeStopInput { config?: IConfig, event: MouseEvent, data: DraggableData, id: string }
+export interface IOnDragNodeStopInput { config?: IConfig, event: DraggableEvent, data: DraggableData, id: string }
 
 export type IOnDragNodeStop = (input: IOnDragNodeStopInput) => void
 
-export interface IOnDragCanvasStopInput { config?: IConfig, event: MouseEvent, data: DraggableData }
+export interface IOnDragCanvasStopInput { config?: IConfig, event: DraggableEvent, data: DraggableData }
 
 export type IOnDragCanvasStop = (input: IOnDragCanvasStopInput) => void
 
@@ -77,6 +77,8 @@ export type IOnLinkMouseLeave = (input: ILinkBaseInput) => void
 export type IOnLinkClick = (input: ILinkBaseInput) => void
 
 export type IOnCanvasClick = (input: { config?: IConfig }) => void
+
+export type IOnCanvasDoubleClick = (event: React.MouseEvent) => void
 
 export type IOnDeleteKey = (input: { config?: IConfig }) => void
 

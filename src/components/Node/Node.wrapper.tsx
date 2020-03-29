@@ -40,7 +40,7 @@ export interface INodeWrapperProps {
   onNodeMouseLeave: IOnNodeMouseLeave
 }
 
-export const NodeWrapper = ({
+export function NodeWrapper({
   config,
   node,
   onDragNode,
@@ -64,16 +64,26 @@ export const NodeWrapper = ({
   onLinkMove,
   onLinkComplete,
   onLinkCancel,
-}: INodeWrapperProps) => {
+}: INodeWrapperProps) {
   const [size, setSize] = React.useState<ISize>({ width: 0, height: 0 })
 
   const isDragging = React.useRef(false)
 
   const onStart = React.useCallback((e: MouseEvent) => {
+
+    if (e.shiftKey) {
+      console.log('shift?', e.shiftKey)
+      e.stopPropagation()
+      e.preventDefault()
+      isDragging.current = false
+      return false
+    }
+
     // Stop propagation so the canvas does not move
     e.stopPropagation()
     isDragging.current = false
-  },[])
+    return
+  }, [])
 
   const onDrag = React.useCallback((event: MouseEvent, data: DraggableData) => {
     isDragging.current = true
@@ -129,7 +139,7 @@ export const NodeWrapper = ({
       />
       <NodeInner node={node} config={config} />
       <Ports node={node} config={config}>
-        { Object.keys(node.ports).map((portId) => (
+        {Object.keys(node.ports).map((portId) => (
           <PortWrapper
             config={config}
             key={portId}
@@ -147,7 +157,7 @@ export const NodeWrapper = ({
             onLinkComplete={onLinkComplete}
             onLinkCancel={onLinkCancel}
           />
-        )) }
+        ))}
       </Ports>
     </>
   )
@@ -157,7 +167,7 @@ export const NodeWrapper = ({
       bounds="parent"
       axis="both"
       position={node.position}
-      grid={[1,1]}
+      grid={[1, 1]}
       onStart={onStart}
       onDrag={onDrag}
       onStop={onStop}

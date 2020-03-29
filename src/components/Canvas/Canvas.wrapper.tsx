@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Draggable from 'react-draggable'
-import { IConfig, IOnCanvasClick, IOnCanvasDrop, IOnDeleteKey, IOnDragCanvas, IOnDragCanvasStop, REACT_FLOW_CHART } from '../../'
+import { IConfig, IOnCanvasClick, IOnCanvasDoubleClick, IOnCanvasDrop, IOnDeleteKey, IOnDragCanvas, IOnDragCanvasStop, REACT_FLOW_CHART } from '../../'
 import CanvasContext from './CanvasContext'
 import { ICanvasInnerDefaultProps } from './CanvasInner.default'
 import { ICanvasOuterDefaultProps } from './CanvasOuter.default'
@@ -15,6 +15,7 @@ export interface ICanvasWrapperProps {
   onDragCanvasStop: IOnDragCanvasStop
   onDeleteKey: IOnDeleteKey
   onCanvasClick: IOnCanvasClick
+  onCanvasDoubleClick: IOnCanvasDoubleClick
   onCanvasDrop: IOnCanvasDrop
   ComponentInner: React.FunctionComponent<ICanvasInnerDefaultProps>
   ComponentOuter: React.FunctionComponent<ICanvasOuterDefaultProps>
@@ -72,6 +73,7 @@ export class CanvasWrapper extends React.Component<ICanvasWrapperProps, IState> 
       onDragCanvasStop,
       children,
       onCanvasClick,
+      onCanvasDoubleClick,
       onDeleteKey,
       onCanvasDrop,
     } = this.props
@@ -94,22 +96,25 @@ export class CanvasWrapper extends React.Component<ICanvasWrapperProps, IState> 
               config={config}
               children={children}
               onClick={onCanvasClick}
+              onDoubleClick={onCanvasDoubleClick}
               tabIndex={0}
-              onKeyDown={ (e: React.KeyboardEvent) => {
+              onKeyDown={(e: React.KeyboardEvent) => {
                 // delete or backspace keys
-                if (e.keyCode === 46 || e.keyCode === 8) {
+                if (e.keyCode === 46) {
                   onDeleteKey({ config })
                 }
               }}
-              onDrop={ (e) => {
+              onDrop={(e) => {
                 const data = JSON.parse(e.dataTransfer.getData(REACT_FLOW_CHART))
                 if (data) {
-                  onCanvasDrop({ data, position: {
-                    x: e.clientX - (position.x + offsetX),
-                    y: e.clientY - (position.y + offsetY),
-                  }})
+                  onCanvasDrop({
+                    data, position: {
+                      x: e.clientX - (position.x + offsetX),
+                      y: e.clientY - (position.y + offsetY),
+                    }
+                  })
                 }
-              } }
+              }}
               onDragOver={(e) => e.preventDefault()}
             />
           </Draggable>

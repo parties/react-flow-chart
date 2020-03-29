@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition } from '../../'
+import { generateCurvePath, generateRightAnglePath, generateSmartPath, IConfig, ILink, IOnLinkClick, IOnLinkMouseEnter, IOnLinkMouseLeave, IPort, IPosition, generateStraightPath, generateLoopBackPath } from '../../'
 
 export interface ILinkDefaultProps {
   config: IConfig
@@ -14,9 +14,10 @@ export interface ILinkDefaultProps {
   isHovered: boolean
   isSelected: boolean
   matrix?: number[][]
+  className?: string
 }
 
-export const LinkDefault = ({
+export function LinkDefault({
   config,
   link,
   startPos,
@@ -29,31 +30,57 @@ export const LinkDefault = ({
   isHovered,
   isSelected,
   matrix,
-}: ILinkDefaultProps) => {
+  className = '',
+}: ILinkDefaultProps) {
 
-  const points = config.smartRouting ?
-    !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
-    : generateCurvePath(startPos, endPos)
+  // const points = config.smartRouting ?
+  //   !!toPort && !!matrix ? generateSmartPath(matrix, startPos, endPos, fromPort, toPort) : generateRightAnglePath(startPos, endPos)
+  //   : generateCurvePath(startPos, endPos)
+
+  let points
+  if (link.from.nodeId === link.to.nodeId) {
+    points = generateLoopBackPath(startPos, endPos)
+  } else {
+    points = generateStraightPath(startPos, endPos)
+  }
+
+  const linkColor: string = (fromPort.properties && fromPort.properties.linkColor) || 'cornflowerblue'
 
   return (
-    <svg style={{ overflow: 'visible', position: 'absolute', cursor: 'pointer', left: 0, right: 0 }}>
-      <circle
+    <svg className={className} style={{ overflow: 'visible', position: 'absolute', cursor: 'pointer', left: 0, right: 0 }}>
+      <defs>
+        <marker
+          id="arrow"
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="3"
+          markerWidth="20"
+          markerHeight="20"
+          fill={linkColor}
+          markerUnits="userSpaceOnUse"
+          orient="auto"
+        >
+          <path d="M 0 0 L 10 3 L 0 6 z" />
+        </marker>
+      </defs>
+      {/*<circle
         r="4"
         cx={startPos.x}
         cy={startPos.y}
-        fill="cornflowerblue"
-      />
+        fill={linkColor}
+      />*/}
       {/* Main line */}
       <path
         d={points}
-        stroke="cornflowerblue"
+        stroke={linkColor}
         strokeWidth="3"
         fill="none"
+        markerEnd="url(#arrow)"
       />
       {/* Thick line to make selection easier */}
       <path
         d={points}
-        stroke="cornflowerblue"
+        stroke={linkColor}
         strokeWidth="20"
         fill="none"
         strokeLinecap="round"
@@ -63,14 +90,14 @@ export const LinkDefault = ({
         onClick={(e) => {
           onLinkClick({ config, linkId: link.id })
           e.stopPropagation()
-        } }
+        }}
       />
-      <circle
+      {/*<circle
         r="4"
         cx={endPos.x}
         cy={endPos.y}
-        fill="cornflowerblue"
-      />
+        fill={linkColor}
+      />*/}
     </svg>
   )
 }
